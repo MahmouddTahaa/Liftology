@@ -1,0 +1,2828 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fitness Progress Dashboard</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto+Condensed:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="icon" type="image/x-icon" href="images/weightlifter.png" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Roboto+Condensed:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      :root {
+        /* Light theme (default) */
+        --primary: #e60026; /* Bold red */
+        --primary-dark: #b3001d;
+        --text-primary: #111111; /* Very dark gray */
+        --text-secondary: #444444;
+        --bg-primary: #ffffff; /* Pure white */
+        --bg-secondary: #f8f9fa;
+        --bg-tertiary: #e9ecef;
+        --card-bg: #ffffff;
+        --border-color: #dee2e6;
+        --success: #28a745;
+        --warning: #ffc107;
+        --danger: #e60026;
+        --darker: #000000;
+        --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+        --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Dark theme variables */
+      [data-theme="dark"] {
+        --primary: #ff0033; /* Vivid red for high contrast */
+        --primary-dark: #cc0029;
+        --text-primary: #ffffff; /* Pure white text */
+        --text-secondary: #cccccc;
+        --bg-primary: #121212; /* Deep black background */
+        --bg-secondary: #1e1e1e;
+        --bg-tertiary: #2d2d2d;
+        --card-bg: #1e1e1e;
+        --border-color: #333333;
+        --success: #28a745;
+        --warning: #ffc107;
+        --danger: #ff0033;
+        --darker: #000000;
+        --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.2);
+        --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.25);
+        --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.3);
+      }
+
+      body {
+        font-family: "Montserrat", sans-serif;
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+        line-height: 1.6;
+        min-height: 100vh;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        font-family: "Roboto Condensed", sans-serif;
+        font-weight: 700;
+        color: var(--text-primary);
+      }
+
+      p,
+      span,
+      small {
+        color: var(--text-secondary);
+      }
+
+      .text-muted {
+        color: var(--text-secondary) !important;
+      }
+
+      .text-primary {
+        color: var(--danger) !important;
+      }
+
+      .text-secondary {
+        color: var(--text-secondary) !important;
+      }
+
+      .container {
+        max-width: 1200px;
+        padding: 2rem 1rem;
+      }
+
+      /* Header Styles */
+      .plan-header {
+        background: linear-gradient(
+          135deg,
+          rgba(230, 0, 38, 0.05) 0%,
+          var(--card-bg) 100%
+        );
+        border-radius: 16px;
+        overflow: hidden;
+        padding: 2rem;
+        margin-bottom: 3rem;
+        box-shadow: 0 8px 24px rgba(230, 0, 38, 0.08);
+        border: 1px solid var(--border-color);
+        transition: all 0.3s ease;
+        position: relative;
+      }
+
+      .plan-header::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+      }
+
+      .plan-header:hover {
+        box-shadow: 0 12px 28px rgba(230, 0, 38, 0.12);
+      }
+
+      .plan-header h4 {
+        font-size: 1.75rem;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.75rem;
+        color: var(--text-primary);
+      }
+
+      /* Back Link */
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        padding: 0.5rem 1.5rem;
+        border-radius: 30px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        color: var(--danger);
+        background-color: var(--card-bg);
+        border: 2px solid var(--danger);
+      }
+      /* Adjust badge colors for dark mode */
+      .badge {
+        background-color: var(--bg-secondary);
+        color: var(--text-primary);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .back-link:hover {
+        background-color: var(--danger);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(244, 67, 54, 0.2);
+      }
+
+      /* Day Card Styles */
+      .plan-day {
+        background-color: var(--card-bg);
+        color: var(--text-primary);
+        border: 1px solid var(--border-color);
+        padding: 2rem;
+        border-radius: 16px;
+        margin-bottom: 2.5rem;
+        box-shadow: 0 5px 15px rgba(244, 67, 54, 0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .plan-day:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(244, 67, 54, 0.1);
+        border-color: var(--danger);
+      }
+
+      .plan-day h5 {
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+        color: var(--danger);
+        position: relative;
+        display: inline-block;
+      }
+
+      .plan-day h5::after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 50px;
+        height: 3px;
+        background-color: var(--danger);
+        border-radius: 3px;
+      }
+
+      .day-title {
+        font-size: 0.95rem;
+        color: var(--text-secondary);
+        margin-bottom: 1.5rem;
+        font-weight: 500;
+      }
+
+      /* Stats Card */
+      .stats-card {
+        background: linear-gradient(
+          135deg,
+          rgba(230, 0, 38, 0.03) 0%,
+          var(--card-bg) 100%
+        );
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 1.5rem;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--border-color);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .stats-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-lg);
+        border-color: var(--primary);
+      }
+
+      .stats-card h6 {
+        font-size: 0.95rem;
+        color: var(--text-secondary);
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .stats-card .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+        color: var(--primary);
+        line-height: 1.2;
+      }
+
+      .stats-card .stat-change {
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 12px;
+        border-radius: 20px;
+        background: var(--bg-secondary);
+        width: fit-content;
+      }
+
+      /* Progress Bar */
+      .progress-container {
+        width: 100%;
+        height: 10px;
+        background-color: var(--bg-secondary);
+        border-radius: 5px;
+        margin: 1.25rem 0;
+        overflow: hidden;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      .progress-bar {
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          var(--primary) 0%,
+          var(--primary-dark) 100%
+        );
+        border-radius: 5px;
+        transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      /* Workout Log */
+      .workout-log {
+        background: linear-gradient(
+          135deg,
+          rgba(230, 0, 38, 0.03) 0%,
+          var(--card-bg) 100%
+        );
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 2.5rem;
+        box-shadow: 0 8px 24px rgba(230, 0, 38, 0.06);
+        border: 1px solid var(--border-color);
+      }
+
+      .workout-log-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+      }
+
+      .workout-log-header h5 {
+        font-size: 1.5rem;
+        color: var(--text-primary);
+        margin: 0;
+      }
+
+      .workout-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.25rem;
+        border-bottom: 1px solid var(--border-color);
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid transparent;
+      }
+
+      .workout-item:hover {
+        transform: translateX(8px);
+        background-color: var(--bg-secondary);
+        border-color: var(--primary);
+        box-shadow: var(--shadow-md);
+      }
+
+      .workout-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        background: linear-gradient(
+          135deg,
+          rgba(230, 0, 38, 0.1) 0%,
+          rgba(230, 0, 38, 0.05) 100%
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary);
+        font-size: 1.25rem;
+      }
+
+      .workout-details h6 {
+        margin-bottom: 0.25rem;
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+
+      .workout-details p {
+        margin-bottom: 0;
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+      }
+
+      .workout-stats {
+        text-align: right;
+      }
+
+      .workout-stats .badge {
+        background-color: rgba(10, 132, 255, 0.1);
+        color: var(--primary);
+        font-weight: 500;
+      }
+
+      /* Calendar */
+      .calendar {
+        background: linear-gradient(
+          135deg,
+          rgba(230, 0, 38, 0.03) 0%,
+          var(--card-bg) 100%
+        );
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 2.5rem;
+        box-shadow: 0 8px 24px rgba(230, 0, 38, 0.06);
+        border: 1px solid var(--border-color);
+      }
+
+      .calendar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+      }
+
+      .calendar-header h5 {
+        font-size: 1.5rem;
+        color: var(--text-primary);
+        margin: 0;
+      }
+
+      .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 10px;
+      }
+
+      .calendar-day-header {
+        text-align: center;
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        padding: 0.5rem 0;
+      }
+
+      .calendar-day {
+        aspect-ratio: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        color: var(--text-primary);
+        font-weight: 500;
+      }
+
+      .calendar-day:hover {
+        transform: scale(1.1);
+        background-color: var(--bg-secondary);
+        box-shadow: var(--shadow-md);
+      }
+
+      .calendar-day.active {
+        background: linear-gradient(
+          135deg,
+          var(--primary) 0%,
+          var(--primary-dark) 100%
+        );
+        color: white;
+        box-shadow: var(--shadow-md);
+      }
+
+      .calendar-day.has-workout::after {
+        content: "";
+        position: absolute;
+        bottom: 8%;
+        width: 6px;
+        height: 6px;
+        background-color: var(--primary);
+        border-radius: 50%;
+        margin-top: 4px;
+      }
+
+      .calendar-day.active.has-workout::after {
+        background-color: white;
+      }
+
+      /* Chart Container */
+      .chart-container {
+        background: linear-gradient(
+          135deg,
+          rgba(230, 0, 38, 0.03) 0%,
+          var(--card-bg) 100%
+        );
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 2.5rem;
+        box-shadow: 0 8px 24px rgba(230, 0, 38, 0.06);
+        border: 1px solid var(--border-color);
+      }
+
+      .chart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+      }
+
+      .chart-header h5 {
+        font-size: 1.5rem;
+        color: var(--text-primary);
+        margin: 0;
+      }
+
+      /* No Data State */
+      .no-data {
+        background: rgba(244, 67, 54, 0.08);
+        color: var(--text-primary);
+        border-left: 4px solid var(--danger);
+        padding: 2rem;
+        border-radius: 12px;
+        text-align: center;
+      }
+
+      .no-data h5 {
+        color: var(--danger);
+        font-weight: 600;
+        margin-bottom: 1rem;
+      }
+
+      .theme-toggle {
+        background: none;
+        border: none;
+        color: var(--text-primary);
+        cursor: pointer;
+        font-size: 1.25rem;
+        padding: 0.5rem;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .theme-toggle:hover {
+        transform: rotate(15deg);
+        background-color: var(--primary);
+        color: white;
+      }
+
+      /* Exercise details */
+      .exercise-details {
+        display: none;
+        padding: 1rem;
+        background-color: var(--bg-secondary);
+        border-radius: 8px;
+        margin-top: 1rem;
+      }
+
+      .exercise-details.show {
+        display: block;
+      }
+
+      .exercise-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .exercise-item:last-child {
+        border-bottom: none;
+      }
+
+      /* Modal styles */
+      .modal-content {
+        background: var(--card-bg);
+        border-radius: 16px;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .modal-content:hover {
+        box-shadow: var(--shadow-lg);
+      }
+
+      .modal-header {
+        border-bottom: 1px solid var(--border-color);
+        padding: 1.5rem 2rem;
+      }
+
+      .modal-footer {
+        border-top: 1px solid var(--border-color);
+        padding: 1.5rem 2rem;
+      }
+
+      /* Add workout button */
+      .add-workout-btn {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        background: linear-gradient(
+          135deg,
+          var(--primary) 0%,
+          var(--primary-dark) 100%
+        );
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        box-shadow: 0 8px 24px rgba(230, 0, 38, 0.2);
+        z-index: 1000;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .add-workout-btn:hover {
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: var(--shadow-lg);
+        filter: brightness(1.1);
+      }
+
+      /* Exercise log styles */
+      .exercise-log-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .exercise-log-item:last-child {
+        border-bottom: none;
+      }
+
+      .exercise-log-progress {
+        width: 100%;
+        height: 6px;
+        background-color: var(--bg-secondary);
+        border-radius: 3px;
+        margin-top: 0.5rem;
+        overflow: hidden;
+      }
+
+      .exercise-log-progress-bar {
+        height: 100%;
+        background-color: var(--success);
+        border-radius: 3px;
+      }
+
+      @media (max-width: 768px) {
+        .theme-toggle {
+          position: fixed;
+          bottom: 20px;
+          right: 90px;
+          background: var(--primary);
+          color: white;
+          box-shadow: 0 4px 12px rgba(230, 0, 38, 0.2);
+        }
+
+        .stats-grid {
+          grid-template-columns: 1fr 1fr !important;
+          gap: 1rem;
+        }
+
+        .workout-info {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 8px;
+        }
+
+        .workout-stats {
+          text-align: left;
+        }
+
+        .add-workout-btn {
+          width: 56px;
+          height: 56px;
+          bottom: 20px;
+          right: 20px;
+        }
+      }
+
+      @media (max-width: 576px) {
+        .stats-grid {
+          grid-template-columns: 1fr !important;
+        }
+
+        .workout-item {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 1rem;
+        }
+
+        .workout-stats {
+          width: 100%;
+          text-align: left;
+        }
+      }
+
+      .btn-outline-primary {
+        border: 2px solid var(--primary);
+        color: var(--primary);
+        border-radius: 12px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .btn-outline-primary:hover {
+        background: var(--primary);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+      }
+
+      .btn-primary {
+        background: linear-gradient(
+          135deg,
+          var(--primary) 0%,
+          var(--primary-dark) 100%
+        );
+        border: none;
+        border-radius: 12px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .btn:hover {
+        border-color: var(--primary);
+      }
+      :not(.btn-check) + .btn:active {
+        color: white;
+        background-color: var(--primary);
+        border-color: var(--primary);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+        filter: brightness(1.1);
+      }
+
+      /* Card Styles */
+      .card {
+        background-color: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        box-shadow: var(--shadow-sm);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        color: var(--text-primary);
+        overflow: hidden; /* Add this to ensure content doesn't overflow rounded corners */
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-lg);
+        border-color: var(--primary);
+      }
+
+      .card-body {
+        padding: 1.75rem;
+        background-color: var(--card-bg);
+      }
+
+      .card h6 {
+        color: var(--danger);
+        font-weight: 600;
+        margin-bottom: 1rem;
+      }
+
+      .card p,
+      .card small {
+        margin-bottom: 0.5rem;
+        color: var(--text-primary);
+      }
+
+      .card .text-primary {
+        color: var(--danger) !important;
+      }
+
+      .card .bg-light {
+        background-color: var(--bg-secondary) !important;
+      }
+
+      .card .border-primary {
+        border-color: var(--danger) !important;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Add Workout Button -->
+    <button class="add-workout-btn" id="addWorkoutBtn">
+      <i class="fas fa-plus"></i>
+    </button>
+
+    <!-- Add Workout Modal -->
+    <div
+      class="modal fade"
+      id="addWorkoutModal"
+      tabindex="-1"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Add New Workout</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="workoutForm">
+              <div class="mb-3">
+                <label for="workoutType" class="form-label">Workout Type</label>
+                <select class="form-select" id="workoutType" required>
+                  <option value="">Select type</option>
+                  <option value="Upper Body">Upper Body</option>
+                  <option value="Lower Body">Lower Body</option>
+                  <option value="Cardio">Cardio</option>
+                  <option value="HIIT">HIIT</option>
+                  <option value="Yoga">Yoga</option>
+                  <option value="CrossFit">CrossFit</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="workoutDate" class="form-label">Date</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  id="workoutDate"
+                  required
+                />
+              </div>
+
+              <div id="exercisesContainer">
+                <h6>Exercises</h6>
+                <div class="exercise-entry mb-3">
+                  <div class="row">
+                    <div class="col-md-5">
+                      <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Exercise name"
+                        required
+                      />
+                    </div>
+                    <div class="col-md-2">
+                      <input
+                        type="number"
+                        class="form-control"
+                        placeholder="Sets"
+                        required
+                      />
+                    </div>
+                    <div class="col-md-2">
+                      <input
+                        type="number"
+                        class="form-control reps"
+                        placeholder="Reps"
+                        required
+                      />
+                    </div>
+                    <div class="col-md-2">
+                      <input
+                        type="number"
+                        class="form-control weight"
+                        placeholder="Weight"
+                      />
+                    </div>
+                    <div class="col-md-1">
+                      <button
+                        type="button"
+                        class="btn btn-danger btn-sm remove-exercise"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-primary mb-3"
+                id="addExerciseBtn"
+              >
+                <i class="fas fa-plus"></i> Add Exercise
+              </button>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button type="button" class="btn btn-primary" id="saveWorkoutBtn">
+              Save Workout
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Workout Details Modal -->
+    <div
+      class="modal fade"
+      id="workoutDetailsModal"
+      tabindex="-1"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="workoutDetailsTitle">
+              Workout Details
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body" id="workoutDetailsBody">
+            <!-- Details will be inserted here -->
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              class="btn btn-success"
+              id="completeWorkoutBtn"
+            >
+              Mark as Completed
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Exercise Logging Modal -->
+    <div
+      class="modal fade"
+      id="logExerciseModal"
+      tabindex="-1"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="logExerciseModalTitle">Log Exercise</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="logExerciseForm">
+              <div class="mb-3">
+                <label for="logExerciseName" class="form-label"
+                  >Exercise Name</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="logExerciseName"
+                  required
+                  readonly
+                />
+              </div>
+              <div class="row">
+                <div class="col-md-4 mb-3">
+                  <label for="logExerciseSets" class="form-label">Sets</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="logExerciseSets"
+                    min="1"
+                    required
+                  />
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label for="logExerciseReps" class="form-label">Reps</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="logExerciseReps"
+                    min="1"
+                    required
+                  />
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label for="logExerciseWeight" class="form-label"
+                    >Weight (kg)</label
+                  >
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="logExerciseWeight"
+                    min="0"
+                    step="0.5"
+                  />
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="logExerciseRPE" class="form-label"
+                  >RPE (1-10)</label
+                >
+                <input
+                  type="range"
+                  class="form-range"
+                  id="logExerciseRPE"
+                  min="1"
+                  max="10"
+                  value="6"
+                />
+                <div class="d-flex justify-content-between">
+                  <small>1 (Very Easy)</small>
+                  <small>10 (Max Effort)</small>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              id="saveExerciseLogBtn"
+            >
+              Save Log
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container py-5">
+      <div
+        class="plan-header d-flex justify-content-between align-items-center flex-wrap"
+      >
+        <div>
+          <h4>YOUR FITNESS PROGRESS DASHBOARD</h4>
+          <p class="mb-0">Track your workouts, progress, and achievements</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <button class="theme-toggle" id="themeToggle">
+            <i class="fas fa-moon"></i>
+          </button>
+          <a href="index.html" class="back-link"> Home </a>
+          <a href="plan.html" class="back-link"> Exercise Plan </a>
+          <a href="diet.html" class="back-link"> Diet Plan </a>
+        </div>
+      </div>
+
+      <!-- User Summary -->
+      <div class="card bg-light border-danger mb-4">
+        <div class="card-body">
+          <div class="row" style="text-transform: capitalize">
+            <div class="col-md-4">
+              <h6 class="">
+                <i class="fas fa-user me-2 text-primary"></i> User
+              </h6>
+              <p class="mb-2" id="userName">Loading...</p>
+            </div>
+            <div class="col-md-4">
+              <h6 class="">
+                <i class="fas fa-bullseye me-2 text-primary"></i> Goal
+              </h6>
+              <p class="mb-2" id="userGoal">Loading...</p>
+            </div>
+            <div class="col-md-4">
+              <h6 class="">
+                <i class="fa-solid fa-weight-scale"></i> Current Weight
+              </h6>
+              <p class="mb-2" id="userLevel">Loading...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Overview -->
+      <div
+        class="row stats-grid"
+        style="
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 1rem;
+          margin-bottom: 2rem;
+        "
+      >
+        <div class="stats-card">
+          <h6><i class="fas fa-fire me-2"></i>Workouts This Week</h6>
+          <div class="stat-value" id="workoutsThisWeek">0</div>
+          <div class="stat-change positive">
+            <i class="fas fa-arrow-up"></i>
+            <span id="workoutsComparison">0 more than last week</span>
+          </div>
+        </div>
+        <div class="stats-card">
+          <h6><i class="fas fa-check-circle me-2"></i>Completion Rate</h6>
+          <div class="stat-value" id="completionRate">0%</div>
+          <div class="stat-change neutral">
+            <i class="fas fa-equals"></i>
+            <span id="completionComparison">Same as last week</span>
+          </div>
+        </div>
+        <div class="stats-card">
+          <h6><i class="fas fa-weight me-2"></i>Weight Progress</h6>
+          <div class="stat-value" id="currentWeight">0 kg</div>
+          <div class="stat-change positive">
+            <i class="fas fa-arrow-down"></i>
+            <span id="weightChange">0 kg down</span>
+          </div>
+        </div>
+        <div class="stats-card">
+          <h6><i class="fas fa-dumbbell me-2"></i>Strength Gain</h6>
+          <div class="stat-value" id="strengthGain">+0%</div>
+          <div class="stat-change positive">
+            <i class="fas fa-arrow-up"></i>
+            <span id="strengthComparison">0% improvement</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Progress Section -->
+      <div class="plan-day">
+        <h5>WEEKLY PROGRESS</h5>
+        <div class="day-title">Your workout completion for this week</div>
+
+        <div class="progress-container">
+          <div
+            class="progress-bar"
+            id="weeklyProgressBar"
+            style="width: 0%"
+          ></div>
+        </div>
+
+        <div class="d-flex justify-content-between mt-2">
+          <small class="text-muted"
+            >Started: <span id="weekStartDate">Mon, Jan 1</span></small
+          >
+          <small class="text-muted"
+            ><span id="completedWorkouts">0</span> of
+            <span id="totalWorkouts">0</span> workouts completed</small
+          >
+        </div>
+
+        <div class="mt-4">
+          <h6>
+            <i class="fas fa-trophy me-2 text-primary"></i>This Week's
+            Achievements
+          </h6>
+          <ul class="mt-2" id="achievementsList">
+            <li>No achievements yet</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Recent Workouts -->
+      <div class="workout-log">
+        <div class="workout-log-header">
+          <h5>RECENT WORKOUTS</h5>
+          <a
+            href="#"
+            class="btn btn-sm btn-outline-primary"
+            id="viewAllWorkoutsBtn"
+            >View All</a
+          >
+        </div>
+
+        <div id="workoutsList">
+          <!-- Workouts will be loaded here -->
+        </div>
+      </div>
+
+      <!-- Calendar and Chart -->
+      <div class="row">
+        <div class="col-md-6">
+          <div class="calendar">
+            <div class="calendar-header">
+              <h5>WORKOUT CALENDAR</h5>
+              <div class="btn-group btn-group-sm">
+                <button class="btn text-primary" id="prevMonthBtn">
+                  <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="btn text-primary" id="currentMonthBtn">
+                  June 2023
+                </button>
+                <button class="btn text-primary" id="nextMonthBtn">
+                  <i class="fas fa-chevron-right"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="calendar-grid" id="calendarGrid">
+              <!-- Calendar will be generated dynamically -->
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="chart-container">
+            <div class="chart-header">
+              <h5>STRENGTH PROGRESS</h5>
+              <select
+                class="form-select form-select-sm"
+                id="chartTimeRange"
+                style="width: auto"
+              >
+                <option value="4">Last 4 Weeks</option>
+                <option value="8">Last 8 Weeks</option>
+                <option value="12">Last 12 Weeks</option>
+              </select>
+            </div>
+
+            <canvas id="strengthChart" height="250"></canvas>
+
+            <div class="mt-3">
+              <div class="d-flex justify-content-between mb-1">
+                <small>Bench Press</small>
+                <small>+0%</small>
+              </div>
+              <div class="progress-container">
+                <div class="progress-bar" style="width: 0%"></div>
+              </div>
+
+              <div class="d-flex justify-content-between mb-1 mt-2">
+                <small>Squat</small>
+                <small>+0%</small>
+              </div>
+              <div class="progress-container">
+                <div class="progress-bar" style="width: 0%"></div>
+              </div>
+
+              <div class="d-flex justify-content-between mb-1 mt-2">
+                <small>Deadlift</small>
+                <small>+0%</small>
+              </div>
+              <div class="progress-container">
+                <div class="progress-bar" style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      // Initialize user data if not exists
+      const currentUser = JSON.parse(localStorage.getItem("currentUser")) || {};
+      if (!currentUser.workoutHistory) {
+        currentUser.workoutHistory = [];
+      }
+      if (!currentUser.exerciselog) {
+        currentUser.exerciselog = [];
+      }
+      if (!currentUser.workoutData) {
+        currentUser.workoutData = [];
+      }
+      if (!currentUser.stats) {
+        currentUser.stats = {
+          weight: 0,
+          workoutsThisWeek: 0,
+          completionRate: 0,
+          strengthGain: 0,
+          achievements: [],
+        };
+      }
+      localStorage.setItem("currentUser", JSON.stringify(currentUser));
+
+      // Initialize workout data from localStorage
+      let workoutData = currentUser.workoutData || [];
+      // Convert date strings back to Date objects
+      workoutData = workoutData.map((workout) => ({
+        ...workout,
+        date: new Date(workout.date),
+      }));
+
+      // Save data to localStorage
+      function saveWorkoutData() {
+        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+        currentUser.workoutData = workoutData;
+        localStorage.setItem("currentUser", JSON.stringify(currentUser));
+      }
+
+      // Load workout data from localStorage
+      function loadWorkoutData() {
+        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+        if (currentUser && currentUser.workoutData) {
+          workoutData = currentUser.workoutData.map((workout) => ({
+            ...workout,
+            date: new Date(workout.date),
+          }));
+          renderWorkouts();
+          updateStats();
+          generateCalendar();
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        // Load user data
+        document.getElementById("userName").textContent =
+          currentUser.user_info["first name"] || "User";
+        document.getElementById("userGoal").textContent =
+          currentUser.exercise_plan.input["fitnessGoal"].replace(/_/g, " ") ||
+          "Not set";
+        document.getElementById("userLevel").textContent =
+          `${currentUser.exercise_plan.input["weight"] || "Not specified"} KG`;
+
+        // Load workout data
+        loadWorkoutData();
+
+        // Initialize the dashboard
+        updateStats();
+        renderWorkouts();
+        generateCalendar();
+        initializeChart();
+        initializeExerciseLogging();
+
+        // Theme toggle functionality
+        const themeToggle = document.getElementById("themeToggle");
+        const prefersDarkScheme = window.matchMedia(
+          "(prefers-color-scheme: dark)"
+        );
+
+        // Check for saved theme preference or use system preference
+        const currentTheme =
+          localStorage.getItem("theme") ||
+          (prefersDarkScheme.matches ? "dark" : "light");
+
+        // Apply the current theme
+        if (currentTheme === "dark") {
+          document.documentElement.setAttribute("data-theme", "dark");
+          themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        } else {
+          document.documentElement.removeAttribute("data-theme");
+          themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+        }
+
+        // Toggle theme on button click
+        themeToggle.addEventListener("click", () => {
+          let theme;
+          if (document.documentElement.getAttribute("data-theme")) {
+            document.documentElement.removeAttribute("data-theme");
+            theme = "light";
+            themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+          } else {
+            document.documentElement.setAttribute("data-theme", "dark");
+            theme = "dark";
+            themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+          }
+          localStorage.setItem("theme", theme);
+        });
+
+        // Listen for system theme changes
+        prefersDarkScheme.addEventListener("change", (e) => {
+          if (!localStorage.getItem("theme")) {
+            if (e.matches) {
+              document.documentElement.setAttribute("data-theme", "dark");
+              themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            } else {
+              document.documentElement.removeAttribute("data-theme");
+              themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+            }
+          }
+        });
+      });
+
+      // Initialize exercise logging functionality
+      function initializeExerciseLogging() {
+        document.addEventListener("click", function (e) {
+          if (e.target.classList.contains("log-exercise-btn")) {
+            const exerciseName = e.target.dataset.exercise;
+            document.getElementById("logExerciseName").value = exerciseName;
+
+            // Reset form to default values
+            document.getElementById("logExerciseSets").value = "";
+            document.getElementById("logExerciseReps").value = "";
+            document.getElementById("logExerciseWeight").value = "";
+            document.getElementById("logExerciseRPE").value = 6;
+
+            const modal = new bootstrap.Modal(
+              document.getElementById("logExerciseModal")
+            );
+            modal.show();
+          }
+        });
+
+        // Save exercise log
+        document
+          .getElementById("saveExerciseLogBtn")
+          .addEventListener("click", function () {
+            const exerciseName =
+              document.getElementById("logExerciseName").value;
+            const sets = parseInt(
+              document.getElementById("logExerciseSets").value
+            );
+            const reps = parseInt(
+              document.getElementById("logExerciseReps").value
+            );
+            const weight =
+              parseFloat(document.getElementById("logExerciseWeight").value) ||
+              null;
+            const rpe = parseInt(
+              document.getElementById("logExerciseRPE").value
+            );
+
+            if (!exerciseName || !sets || !reps) {
+              alert("Please fill in all required fields");
+              return;
+            }
+
+            // Save exercise data to user's exercise log with current date/time
+            const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+            currentUser.exerciselog.push({
+              exerciseName,
+              sets,
+              reps,
+              weight,
+              rpe,
+              date: new Date().toISOString(),
+            });
+            localStorage.setItem("currentUser", JSON.stringify(currentUser));
+
+            // Update stats and charts
+            updateStats();
+            updateStrengthChart();
+
+            // Close modal
+            const modal = bootstrap.Modal.getInstance(
+              document.getElementById("logExerciseModal")
+            );
+            modal.hide();
+            document.getElementById("logExerciseForm").reset();
+          });
+      }
+
+      // Add workout functionality with dynamic exercise selection
+      document.getElementById("addWorkoutBtn").addEventListener("click", () => {
+        const modal = new bootstrap.Modal(
+          document.getElementById("addWorkoutModal")
+        );
+
+        // Set default date to today
+        const today = new Date().toISOString().split("T")[0];
+        // document.getElementById("workoutDate").value = today;
+
+        // Map day numbers to your plan's day names
+        const dayMap = {
+          0: "day 1", // Sunday
+          1: "day 2", // Monday
+          2: "day 3", // Tuesday
+          3: "day 4", // Wednesday
+          4: "day 1", // Thursday - repeat cycle
+          5: "day 2", // Friday
+          6: "day 3", // Saturday
+        };
+
+        // Get day of week (0-6)
+        const dayOfWeek = new Date().getDay();
+        const dayName = dayMap[dayOfWeek];
+
+        // Get exercises for today
+        const exercises = getExercisesForDay(dayName);
+
+        // Clear existing exercise entries
+        const exercisesContainer =
+          document.getElementById("exercisesContainer");
+        exercisesContainer.innerHTML = `<h6>Exercises for ${dayName}</h6>`;
+
+        // Add initial exercise dropdown
+        if (exercises.length > 0) {
+          addExerciseEntry(exercises);
+        } else {
+          exercisesContainer.innerHTML += `<p class="text-muted">No exercises planned for today</p>`;
+        }
+
+        // Update exercises when date changes
+        document
+          .getElementById("workoutDate")
+          .addEventListener("change", function () {
+            const selectedDay = new Date(this.value).getDay();
+            console.log(selectedDay);
+
+            const selectedDayName = dayMap[selectedDay];
+            const selectedExercises = getExercisesForDay(selectedDayName);
+
+            exercisesContainer.innerHTML = `<h6>Exercises for ${selectedDayName}</h6>`;
+            if (selectedExercises.length > 0) {
+              addExerciseEntry(selectedExercises);
+            } else {
+              exercisesContainer.innerHTML += `<p class="text-muted">No exercises planned for this day</p>`;
+            }
+          });
+
+        modal.show();
+      });
+
+      // Add workout button with dynamic options
+      document
+        .getElementById("addExerciseBtn")
+        .addEventListener("click", () => {
+          const workoutDate = document.getElementById("workoutDate").value;
+          if (!workoutDate) {
+            alert("Please select a date first");
+            return;
+          }
+
+          const dayOfWeek = new Date(workoutDate).getDay();
+          const dayMap = {
+            0: "day 1",
+            1: "day 2",
+            2: "day 3",
+            3: "day 4",
+            4: "day 1",
+            5: "day 2",
+            6: "day 3",
+          };
+          const dayName = dayMap[dayOfWeek];
+          const exercises = getExercisesForDay(dayName);
+
+          // Get currently selected exercises
+          const selectedExercises = Array.from(
+            document.querySelectorAll(".exercise-select")
+          )
+            .map((select) => select.value)
+            .filter((value) => value !== "");
+
+          // Filter out already selected exercises
+          const availableExercises = exercises.filter(
+            (ex) => !selectedExercises.includes(ex)
+          );
+
+          if (availableExercises.length > 0) {
+            addExerciseEntry(availableExercises);
+          } else {
+            alert("All exercises for this day have been added");
+          }
+        });
+
+      // Save new workout with exercise dropdowns
+      document
+        .getElementById("saveWorkoutBtn")
+        .addEventListener("click", () => {
+          const workoutType = document.getElementById("workoutType").value;
+          const workoutDate = document.getElementById("workoutDate").value;
+
+          if (!workoutType || !workoutDate) {
+            alert("Please fill in all required fields");
+            return;
+          }
+
+          // Get exercises from dropdowns
+          const exerciseEntries = document.querySelectorAll(".exercise-entry");
+          const exercises = [];
+
+          exerciseEntries.forEach((entry) => {
+            const exerciseSelect = entry.querySelector(".exercise-select");
+            const setsInput = entry.querySelector("input[placeholder='Sets']");
+            const repsInput = entry.querySelector(".reps");
+            const weightInput = entry.querySelector(".weight");
+
+            const name = exerciseSelect.value;
+            const sets = setsInput.value;
+            const reps = repsInput.value;
+            const weight = weightInput.value;
+
+            if (name && sets && reps) {
+              exercises.push({
+                name,
+                sets: parseInt(sets),
+                reps: parseInt(reps),
+                weight: weight ? parseFloat(weight) : null,
+              });
+            }
+          });
+
+          if (exercises.length === 0) {
+            alert("Please add at least one exercise");
+            return;
+          }
+
+          // Create new workout
+          const newWorkout = {
+            id: Date.now(),
+            type: workoutType,
+            date: new Date(workoutDate),
+            completed: false,
+            exercises: exercises,
+          };
+
+          // Add to workout data
+          workoutData.push(newWorkout);
+          saveWorkoutData();
+
+          // Update UI
+          updateStats();
+          renderWorkouts();
+          generateCalendar();
+
+          // Close modal and reset form
+          const modal = bootstrap.Modal.getInstance(
+            document.getElementById("addWorkoutModal")
+          );
+          modal.hide();
+          document.getElementById(
+            "exercisesContainer"
+          ).innerHTML = `<h6>Exercises</h6>`;
+          document.getElementById("workoutForm").reset();
+        });
+
+      // Stats calculation
+      function updateStats(initializeZeros = false) {
+        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
+        if (initializeZeros) {
+          // Initialize all stats to zero
+          document.getElementById("workoutsThisWeek").textContent = "0";
+          document.getElementById("completionRate").textContent = "0%";
+          document.getElementById("currentWeight").textContent = "0 kg";
+          document.getElementById("strengthGain").textContent = "+0%";
+          document.getElementById("weeklyProgressBar").style.width = "0%";
+          document.getElementById("completedWorkouts").textContent = "0";
+          document.getElementById("totalWorkouts").textContent = "0";
+          document.getElementById("workoutsComparison").textContent =
+            "No data yet";
+          document.getElementById("completionComparison").textContent =
+            "No data yet";
+          document.getElementById("weightChange").textContent = "No data yet";
+          document.getElementById("strengthComparison").textContent =
+            "No data yet";
+
+          // Set week start date
+          const today = new Date();
+          const startOfWeek = new Date(today);
+          startOfWeek.setDate(today.getDate() - today.getDay());
+          document.getElementById("weekStartDate").textContent =
+            startOfWeek.toLocaleDateString([], {
+              weekday: "short",
+              month: "short",
+              day: "numeric",
+            });
+
+          return;
+        }
+
+        // Calculate workouts this week
+        const today = new Date();
+        const startOfWeek = new Date(today);
+        // Adjust to make Saturday the start of the week
+        const dayOfWeek = today.getDay(); // 0 = Sunday, 6 = Saturday
+        const daysToSubtract = (dayOfWeek + 1) % 7; // Add 1 to shift Saturday to 0
+        startOfWeek.setDate(today.getDate() - daysToSubtract);
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(startOfWeek.getDate() + 6);
+
+        // Calculate start and end of previous week
+        const startOfPrevWeek = new Date(startOfWeek);
+        startOfPrevWeek.setDate(startOfWeek.getDate() - 7);
+        const endOfPrevWeek = new Date(startOfWeek);
+        endOfPrevWeek.setDate(startOfWeek.getDate() - 1);
+
+        // Get unique workout days for current week
+        const currentWeekWorkouts = workoutData.filter((workout) => {
+          const workoutDate = new Date(workout.date);
+          return (
+            workoutDate >= startOfWeek &&
+            workoutDate <= endOfWeek &&
+            workout.completed
+          );
+        });
+        const uniqueCurrentWeekDays = new Set(
+          currentWeekWorkouts.map((workout) =>
+            new Date(workout.date).toDateString()
+          )
+        ).size;
+
+        // Get unique workout days for previous week
+        const prevWeekWorkouts = workoutData.filter((workout) => {
+          const workoutDate = new Date(workout.date);
+          return (
+            workoutDate >= startOfPrevWeek &&
+            workoutDate <= endOfPrevWeek &&
+            workout.completed
+          );
+        });
+        const uniquePrevWeekDays = new Set(
+          prevWeekWorkouts.map((workout) =>
+            new Date(workout.date).toDateString()
+          )
+        ).size;
+
+        // Calculate difference
+        const difference = uniqueCurrentWeekDays - uniquePrevWeekDays;
+        let comparisonText;
+        if (difference > 0) {
+          comparisonText = `${difference} more than last week`;
+        } else if (difference < 0) {
+          comparisonText = `${Math.abs(difference)} less than last week`;
+        } else {
+          comparisonText = "same as last week";
+        }
+
+        document.getElementById("workoutsThisWeek").textContent =
+          uniqueCurrentWeekDays;
+        document.getElementById("workoutsComparison").textContent =
+          comparisonText;
+
+        // Calculate completion rate
+        const totalWorkouts = workoutData.filter((workout) => {
+          return workout.date >= startOfWeek;
+        }).length;
+
+        // Get the user's exercise plan
+        const userPlan = currentUser.exercise_plan?.output?.plan || {};
+        const plannedWorkoutDays = Object.keys(userPlan).length;
+
+        // Calculate completion rate based on planned days
+        const completionRate =
+          plannedWorkoutDays > 0
+            ? Math.round((uniqueCurrentWeekDays / plannedWorkoutDays) * 100)
+            : 0;
+
+        document.getElementById(
+          "completionRate"
+        ).textContent = `${completionRate}%`;
+        document.getElementById(
+          "weeklyProgressBar"
+        ).style.width = `${completionRate}%`;
+        document.getElementById("completedWorkouts").textContent =
+          uniqueCurrentWeekDays;
+        document.getElementById("totalWorkouts").textContent =
+          plannedWorkoutDays;
+
+        // Update completion comparison text
+        const prevWeekCompletionRate =
+          plannedWorkoutDays > 0
+            ? Math.round((uniquePrevWeekDays / plannedWorkoutDays) * 100)
+            : 0;
+
+        const completionDifference = completionRate - prevWeekCompletionRate;
+        let completionComparisonText;
+        if (completionDifference > 0) {
+          completionComparisonText = `${completionDifference}% better than last week`;
+        } else if (completionDifference < 0) {
+          completionComparisonText = `${Math.abs(
+            completionDifference
+          )}% worse than last week`;
+        } else {
+          completionComparisonText = "Same as last week";
+        }
+        document.getElementById("completionComparison").textContent =
+          completionComparisonText;
+
+        // Set week start date
+        document.getElementById("weekStartDate").textContent =
+          startOfWeek.toLocaleDateString([], {
+            weekday: "short",
+            month: "short",
+            day: "numeric",
+          });
+
+        // Update weight if available
+        if (currentUser.stats && currentUser.stats.weight > 0) {
+          document.getElementById(
+            "currentWeight"
+          ).textContent = `${currentUser.stats.weight} kg`;
+
+          // Get workout history
+          const workoutHistory = currentUser.workoutHistory || [];
+
+          // Define key exercises to track
+          const keyExercises = [
+            "bench press",
+            "squat",
+            "deadlift",
+            "overhead press",
+            "barbell row",
+          ];
+
+          // Calculate current and historical averages
+          let currentWeekData = {};
+          let historicalData = {};
+
+          // Initialize data structures for each exercise
+          keyExercises.forEach((ex) => {
+            currentWeekData[ex] = [];
+            historicalData[ex] = [];
+          });
+
+          // Get current week's workouts
+          const currentWeekWorkouts = workoutHistory.filter((entry) => {
+            const workoutDate = new Date(entry.date);
+            return workoutDate >= startOfWeek && workoutDate <= endOfWeek;
+          });
+
+          // Get historical workouts (up to 3 weeks back)
+          const threeWeeksAgo = new Date(startOfWeek);
+          threeWeeksAgo.setDate(threeWeeksAgo.getDate() - 21);
+          const historicalWorkouts = workoutHistory.filter((entry) => {
+            const workoutDate = new Date(entry.date);
+            return workoutDate >= threeWeeksAgo && workoutDate < startOfWeek;
+          });
+
+          // Process current week workouts
+          currentWeekWorkouts.forEach((entry) => {
+            if (entry.weight) {
+              keyExercises.forEach((ex) => {
+                if (entry.exerciseName.toLowerCase().includes(ex)) {
+                  currentWeekData[ex].push(entry.weight);
+                }
+              });
+            }
+          });
+
+          // Process historical workouts
+          historicalWorkouts.forEach((entry) => {
+            if (entry.weight) {
+              keyExercises.forEach((ex) => {
+                if (entry.exerciseName.toLowerCase().includes(ex)) {
+                  historicalData[ex].push(entry.weight);
+                }
+              });
+            }
+          });
+
+          // Calculate averages for each exercise
+          let totalCurrentWeight = 0;
+          let totalHistoricalWeight = 0;
+          let exerciseCount = 0;
+
+          keyExercises.forEach((ex) => {
+            if (
+              currentWeekData[ex].length > 0 &&
+              historicalData[ex].length > 0
+            ) {
+              const currentAvg =
+                currentWeekData[ex].reduce((a, b) => a + b, 0) /
+                currentWeekData[ex].length;
+              const historicalAvg =
+                historicalData[ex].reduce((a, b) => a + b, 0) /
+                historicalData[ex].length;
+
+              totalCurrentWeight += currentAvg;
+              totalHistoricalWeight += historicalAvg;
+              exerciseCount++;
+            }
+          });
+
+          // Calculate overall progress
+          let weightChangeText;
+          if (exerciseCount > 0) {
+            const currentAverage = totalCurrentWeight / exerciseCount;
+            const historicalAverage = totalHistoricalWeight / exerciseCount;
+            const weightDifference = currentAverage - historicalAverage;
+            const percentageChange = Math.round(
+              (weightDifference / historicalAverage) * 100
+            );
+
+            if (weightDifference > 0) {
+              weightChangeText = `${percentageChange}% increase`;
+            } else if (weightDifference < 0) {
+              weightChangeText = `${Math.abs(percentageChange)}% decrease`;
+            } else {
+              weightChangeText = "No change";
+            }
+          } else {
+            weightChangeText = "No weight data available";
+          }
+
+          document.getElementById("weightChange").textContent =
+            weightChangeText;
+        } else {
+          document.getElementById("currentWeight").textContent = "Not set";
+          document.getElementById("weightChange").textContent =
+            "Set your weight in profile";
+        }
+
+        // Update the exercise form to show kg instead of lbs
+        const weightInputs = document.querySelectorAll(
+          'input[placeholder="Weight"]'
+        );
+        weightInputs.forEach((input) => {
+          input.placeholder = "Weight (kg)";
+        });
+
+        // Update the log exercise modal
+        const logExerciseWeightLabel = document.querySelector(
+          'label[for="logExerciseWeight"]'
+        );
+        if (logExerciseWeightLabel) {
+          logExerciseWeightLabel.textContent = "Weight (kg)";
+        }
+
+        // Update workout details display
+        function showWorkoutDetails(workoutId) {
+          const workout = workoutData.find((w) => w.id === workoutId);
+          if (!workout) return;
+
+          const modalTitle = document.getElementById("workoutDetailsTitle");
+          const modalBody = document.getElementById("workoutDetailsBody");
+
+          modalTitle.textContent = workout.type;
+
+          // Get exercise history for this workout
+          const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+          const exerciseHistory = currentUser.workoutHistory || [];
+
+          modalBody.innerHTML = `
+            <p><strong>Date:</strong> ${workout.date.toLocaleDateString()}</p>
+            <p><strong>Time:</strong> ${workout.date.toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}</p>
+            <p><strong>Status:</strong> ${
+              workout.completed
+                ? '<span class="badge bg-success">Completed</span>'
+                : '<span class="badge bg-danger">Planned</span>'
+            }</p>
+            <h6 class="mt-3">Exercises:</h6>
+            <div class="exercise-details show">
+              ${workout.exercises
+                .map((ex) => {
+                  // Find history for this exercise
+                  const history = exerciseHistory
+                    .filter(
+                      (entry) =>
+                        entry.exerciseName.toLowerCase() ===
+                        ex.name.toLowerCase()
+                    )
+                    .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                  const progressHtml =
+                    history.length > 0
+                      ? `<div class="progress-container mt-2">
+                        <div class="progress-bar" style="width: ${Math.min(
+                          100,
+                          (ex.reps / history[0].reps) * 100
+                        )}%"></div>
+                      </div>
+                      <small class="text-muted">Last logged: ${new Date(
+                        history[0].date
+                      ).toLocaleString()}</small>`
+                      : '<small class="text-muted">No previous data</small>';
+
+                  return `
+                    <div class="exercise-item">
+                      <div>
+                        <strong>${ex.name}</strong>
+                        <div>${ex.sets}x${ex.reps} ${
+                    ex.weight ? `@ ${ex.weight} kg` : ""
+                  }</div>
+                        ${progressHtml}
+                      </div>
+                      <button class="btn btn-sm btn-outline-primary log-exercise-btn" data-exercise="${
+                        ex.name
+                      }">
+                        Log
+                      </button>
+                    </div>
+                  `;
+                })
+                .join("")}
+            </div>
+          `;
+
+          // Set up complete button
+          const completeBtn = document.getElementById("completeWorkoutBtn");
+          completeBtn.style.display = workout.completed ? "none" : "block";
+          completeBtn.onclick = function () {
+            workout.completed = true;
+            saveWorkoutData();
+            updateStats();
+            renderWorkouts();
+            generateCalendar();
+            const modal = bootstrap.Modal.getInstance(
+              document.getElementById("workoutDetailsModal")
+            );
+            modal.hide();
+          };
+
+          // Add event listeners to log buttons in modal
+          modalBody.querySelectorAll(".log-exercise-btn").forEach((btn) => {
+            btn.addEventListener("click", function (e) {
+              e.stopPropagation();
+              const exerciseName = this.dataset.exercise;
+              document.getElementById("logExerciseName").value = exerciseName;
+
+              // Check if there's previous data for this exercise
+              const previousData = getPreviousExerciseData(exerciseName);
+              if (previousData) {
+                document.getElementById("logExerciseSets").value =
+                  previousData.sets || "";
+                document.getElementById("logExerciseReps").value =
+                  previousData.reps || "";
+                document.getElementById("logExerciseWeight").value =
+                  previousData.weight || "";
+              }
+
+              const logModal = new bootstrap.Modal(
+                document.getElementById("logExerciseModal")
+              );
+              logModal.show();
+            });
+          });
+
+          const modal = new bootstrap.Modal(
+            document.getElementById("workoutDetailsModal")
+          );
+          modal.show();
+        }
+
+        // Calculate strength gain based on actual exercise data
+        if (
+          currentUser.workoutHistory &&
+          currentUser.workoutHistory.length > 0
+        ) {
+          const strengthExercises = ["bench press", "squat", "deadlift"];
+          let totalImprovement = 0;
+          let count = 0;
+
+          strengthExercises.forEach((exercise) => {
+            const exerciseHistory = currentUser.workoutHistory
+              .filter((entry) =>
+                entry.exerciseName.toLowerCase().includes(exercise)
+              )
+              .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            if (exerciseHistory.length > 1) {
+              const first = exerciseHistory[0].weight || 0;
+              const last =
+                exerciseHistory[exerciseHistory.length - 1].weight || 0;
+              if (first > 0 && last > 0) {
+                totalImprovement += ((last - first) / first) * 100;
+                count++;
+              }
+            }
+          });
+
+          const avgImprovement =
+            count > 0 ? Math.round(totalImprovement / count) : 0;
+          document.getElementById(
+            "strengthGain"
+          ).textContent = `+${avgImprovement}%`;
+          document.getElementById("strengthComparison").textContent =
+            avgImprovement > 0
+              ? `${avgImprovement}% improvement`
+              : "No improvement yet";
+        } else {
+          document.getElementById("strengthGain").textContent = "+0%";
+          document.getElementById("strengthComparison").textContent =
+            "No data yet";
+        }
+      }
+
+      // Initialize chart with zero data
+      function initializeChart() {
+        const ctx = document.getElementById("strengthChart").getContext("2d");
+
+        // Start with empty data
+        const labels = Array(12)
+          .fill()
+          .map((_, i) => `Week ${i + 1}`); // Changed to show weeks in order
+        const emptyData = Array(12).fill(0);
+
+        const chart = new Chart(ctx, {
+          type: "line",
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                label: "Bench Press",
+                data: emptyData,
+                borderColor: "rgba(10, 132, 255, 1)",
+                backgroundColor: "rgba(10, 132, 255, 0.1)",
+                tension: 0.4,
+                fill: true,
+              },
+              {
+                label: "Squat",
+                data: emptyData,
+                borderColor: "rgba(0, 200, 83, 1)",
+                backgroundColor: "rgba(0, 200, 83, 0.1)",
+                tension: 0.4,
+                fill: true,
+              },
+              {
+                label: "Deadlift",
+                data: emptyData,
+                borderColor: "rgba(244, 67, 54, 1)",
+                backgroundColor: "rgba(244, 67, 54, 0.1)",
+                tension: 0.4,
+                fill: true,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                position: "top",
+              },
+              tooltip: {
+                mode: "index",
+                intersect: false,
+                callbacks: {
+                  label: function (context) {
+                    let label = context.dataset.label || "";
+                    if (label) {
+                      label += ": ";
+                    }
+                    if (context.parsed.y !== null) {
+                      label += context.parsed.y + " kg";
+                    }
+                    return label;
+                  },
+                },
+              },
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                suggestedMin: 0,
+                suggestedMax: 100,
+                title: {
+                  display: true,
+                  text: "Weight (kg)",
+                },
+              },
+              x: {
+                title: {
+                  display: true,
+                  text: "Week",
+                },
+              },
+            },
+          },
+        });
+
+        // Update chart when time range changes
+        document
+          .getElementById("chartTimeRange")
+          .addEventListener("change", (e) => {
+            const weeks = parseInt(e.target.value);
+            const newLabels = Array(weeks)
+              .fill()
+              .map((_, i) => `Week ${i + 1}`); // Changed to show weeks in order
+
+            // If we have real data, use it, otherwise use zeros
+            const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+            if (
+              currentUser.workoutHistory &&
+              currentUser.workoutHistory.length > 0
+            ) {
+              updateStrengthChart();
+            } else {
+              const emptyData = Array(weeks).fill(0);
+              chart.data.labels = newLabels;
+              chart.data.datasets[0].data = emptyData;
+              chart.data.datasets[1].data = emptyData;
+              chart.data.datasets[2].data = emptyData;
+              chart.update();
+            }
+          });
+      }
+
+      // Update the strength chart with real data
+      function updateStrengthChart() {
+        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+        if (!currentUser || !currentUser.exerciselog) return;
+
+        const weeks = parseInt(document.getElementById("chartTimeRange").value);
+        const today = new Date();
+        const startDate = new Date(today);
+        startDate.setDate(today.getDate() - weeks * 7);
+
+        // Initialize data arrays for each exercise
+        const benchPressData = Array(weeks).fill(null);
+        const squatData = Array(weeks).fill(null);
+        const deadliftData = Array(weeks).fill(null);
+
+        // Group workouts by week
+        const weeklyWorkouts = {};
+        for (let i = 0; i < weeks; i++) {
+          const weekStart = new Date(startDate);
+          weekStart.setDate(startDate.getDate() + i * 7);
+          const weekEnd = new Date(weekStart);
+          weekEnd.setDate(weekStart.getDate() + 6);
+          weeklyWorkouts[i] = {
+            start: weekStart,
+            end: weekEnd,
+            workouts: [],
+          };
+        }
+
+        // Sort workouts into weeks
+        currentUser.exerciselog.forEach((entry) => {
+          const workoutDate = new Date(entry.date);
+          for (let i = 0; i < weeks; i++) {
+            if (
+              workoutDate >= weeklyWorkouts[i].start &&
+              workoutDate <= weeklyWorkouts[i].end
+            ) {
+              weeklyWorkouts[i].workouts.push(entry);
+              break;
+            }
+          }
+        });
+
+        // Process each week's data
+        for (let i = 0; i < weeks; i++) {
+          const weekWorkouts = weeklyWorkouts[i].workouts;
+
+          // Find highest weight for each exercise in this week
+          weekWorkouts.forEach((workout) => {
+            if (workout.exerciseName.toLowerCase().includes("bench press")) {
+              if (
+                benchPressData[i] === null ||
+                workout.weight > benchPressData[i]
+              ) {
+                benchPressData[i] = workout.weight;
+              }
+            }
+            if (workout.exerciseName.toLowerCase().includes("squat")) {
+              if (squatData[i] === null || workout.weight > squatData[i]) {
+                squatData[i] = workout.weight;
+              }
+            }
+            if (workout.exerciseName.toLowerCase().includes("deadlift")) {
+              if (
+                deadliftData[i] === null ||
+                workout.weight > deadliftData[i]
+              ) {
+                deadliftData[i] = workout.weight;
+              }
+            }
+          });
+        }
+
+        // Update chart data
+        const chart = Chart.getChart("strengthChart");
+        if (chart) {
+          chart.data.datasets[0].data = benchPressData;
+          chart.data.datasets[1].data = squatData;
+          chart.data.datasets[2].data = deadliftData;
+          chart.update();
+        }
+
+        // Update progress bars
+        const benchPressProgress = document.querySelector(
+          ".progress-bar:nth-of-type(1)"
+        );
+        const squatProgress = document.querySelector(
+          ".progress-bar:nth-of-type(2)"
+        );
+        const deadliftProgress = document.querySelector(
+          ".progress-bar:nth-of-type(3)"
+        );
+
+        // Calculate progress percentages
+        const benchPressChange = calculateProgress(benchPressData);
+        const squatChange = calculateProgress(squatData);
+        const deadliftChange = calculateProgress(deadliftData);
+
+        // Update progress bars and text
+        updateProgressBar(benchPressProgress, benchPressChange);
+        updateProgressBar(squatProgress, squatChange);
+        updateProgressBar(deadliftProgress, deadliftChange);
+
+        // Update percentage text
+        document
+          .querySelectorAll(
+            ".d-flex.justify-content-between.mb-1 small:last-child"
+          )
+          .forEach((el, index) => {
+            const changes = [benchPressChange, squatChange, deadliftChange];
+            el.textContent = `${changes[index] > 0 ? "+" : ""}${
+              changes[index]
+            }%`;
+          });
+      }
+
+      // Helper function to calculate progress
+      function calculateProgress(data) {
+        const validData = data.filter((val) => val !== null);
+        if (validData.length < 2) return 0;
+
+        const firstValue = validData[0];
+        const lastValue = validData[validData.length - 1];
+
+        if (firstValue === 0) return 0;
+        return Math.round(((lastValue - firstValue) / firstValue) * 100);
+      }
+
+      // Helper function to update progress bar
+      function updateProgressBar(progressBar, percentage) {
+        const width = Math.min(Math.abs(percentage), 100);
+        progressBar.style.width = `${width}%`;
+        progressBar.style.backgroundColor =
+          percentage >= 0 ? "var(--success)" : "var(--danger)";
+      }
+
+      // Render workout items
+      function renderWorkouts() {
+        const workoutsList = document.getElementById("workoutsList");
+        workoutsList.innerHTML = "";
+
+        // Sort workouts by date (newest first)
+        const sortedWorkouts = [...workoutData].sort((a, b) => b.date - a.date);
+
+        sortedWorkouts.forEach((workout) => {
+          const workoutItem = document.createElement("div");
+          workoutItem.className = "workout-item";
+          workoutItem.dataset.id = workout.id;
+
+          const workoutDate = workout.date;
+          const today = new Date();
+          const yesterday = new Date(today);
+          yesterday.setDate(yesterday.getDate() - 1);
+
+          let dateString;
+          if (workoutDate.toDateString() === today.toDateString()) {
+            dateString = `Today, ${workoutDate.toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}`;
+          } else if (workoutDate.toDateString() === yesterday.toDateString()) {
+            dateString = `Yesterday, ${workoutDate.toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}`;
+          } else {
+            dateString = workoutDate.toLocaleDateString([], {
+              weekday: "short",
+              month: "short",
+              day: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+            });
+          }
+
+          let iconClass;
+          if (
+            workout.type.includes("Upper") ||
+            workout.type.includes("Push") ||
+            workout.type.includes("Pull")
+          ) {
+            iconClass = "fas fa-dumbbell";
+          } else if (
+            workout.type.includes("Leg") ||
+            workout.type.includes("Lower")
+          ) {
+            iconClass = "fas fa-running";
+          } else if (
+            workout.type.includes("Cardio") ||
+            workout.type.includes("HIIT")
+          ) {
+            iconClass = "fas fa-heartbeat";
+          } else {
+            iconClass = "fas fa-fire";
+          }
+
+          workoutItem.innerHTML = `
+        <div class="workout-info">
+          <div class="workout-icon">
+            <i class="${iconClass}"></i>
+          </div>
+          <div class="workout-details">
+            <h6>${workout.type}</h6>
+            <p>${dateString}</p>
+          </div>
+        </div>
+        <div class="workout-stats">
+          <span class="badge ${
+            workout.completed ? "bg-success" : "bg-danger"
+          } text-white"> ${workout.completed ? "Completed" : "Pending"} 
+          </span>
+        </div>
+      `;
+
+          // Add click event to show details
+          workoutItem.addEventListener("click", () =>
+            showWorkoutDetails(workout.id)
+          );
+
+          // Add exercise log section
+          const exerciseLogSection = document.createElement("div");
+          exerciseLogSection.className = "exercise-details";
+
+          workout.exercises.forEach((exercise) => {
+            const exerciseLogItem = document.createElement("div");
+            exerciseLogItem.className =
+              "d-flex justify-content-between align-items-center p-2 border-bottom";
+            exerciseLogItem.innerHTML = `
+          <div>
+            <strong>${exercise.name}</strong>
+            <div class="small text-muted">${exercise.sets}x${exercise.reps} ${
+              exercise.weight ? `@ ${exercise.weight}` : ""
+            }</div>
+          </div>
+          <button class="btn btn-sm btn-outline-primary log-exercise-btn" data-exercise="${
+            exercise.name
+          }">
+            <i class="fas fa-plus"></i> Log
+          </button>
+        `;
+            exerciseLogSection.appendChild(exerciseLogItem);
+          });
+
+          workoutItem.appendChild(exerciseLogSection);
+          workoutsList.appendChild(workoutItem);
+        });
+      }
+
+      // Show workout details modal
+      function showWorkoutDetails(workoutId) {
+        const workout = workoutData.find((w) => w.id === workoutId);
+        if (!workout) return;
+
+        const modalTitle = document.getElementById("workoutDetailsTitle");
+        const modalBody = document.getElementById("workoutDetailsBody");
+
+        modalTitle.textContent = workout.type;
+
+        // Get exercise history for this workout
+        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+        const exerciseHistory = currentUser.workoutHistory || [];
+
+        modalBody.innerHTML = `
+      <p><strong>Date:</strong> ${workout.date.toLocaleDateString()}</p>
+      <p><strong>Time:</strong> ${workout.date.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      })}</p>
+      <p><strong>Status:</strong> ${
+        workout.completed
+          ? '<span class="badge bg-success">Completed</span>'
+          : '<span class="badge bg-danger">Planned</span>'
+      }</p>
+      <h6 class="mt-3">Exercises:</h6>
+      <div class="exercise-details show">
+        ${workout.exercises
+          .map((ex) => {
+            // Find history for this exercise
+            const history = exerciseHistory
+              .filter(
+                (entry) =>
+                  entry.exerciseName.toLowerCase() === ex.name.toLowerCase()
+              )
+              .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            const progressHtml =
+              history.length > 0
+                ? `<div class="progress-container mt-2">
+                  <div class="progress-bar" style="width: ${Math.min(
+                    100,
+                    (ex.reps / history[0].reps) * 100
+                  )}%"></div>
+                </div>
+                <small class="text-muted">Last logged: ${new Date(
+                  history[0].date
+                ).toLocaleString()}</small>`
+                : '<small class="text-muted">No previous data</small>';
+
+            return `
+              <div class="exercise-item">
+                <div>
+                  <strong>${ex.name}</strong>
+                  <div>${ex.sets}x${ex.reps} ${
+              ex.weight ? `@ ${ex.weight}` : ""
+            }</div>
+                  ${progressHtml}
+                </div>
+                <button class="btn btn-sm btn-outline-primary log-exercise-btn" data-exercise="${
+                  ex.name
+                }">
+                  Log
+                </button>
+              </div>
+            `;
+          })
+          .join("")}
+      </div>
+    `;
+
+        // Set up complete button
+        const completeBtn = document.getElementById("completeWorkoutBtn");
+        completeBtn.style.display = workout.completed ? "none" : "block";
+        completeBtn.onclick = function () {
+          workout.completed = true;
+          saveWorkoutData();
+          updateStats();
+          renderWorkouts();
+          generateCalendar();
+          const modal = bootstrap.Modal.getInstance(
+            document.getElementById("workoutDetailsModal")
+          );
+          modal.hide();
+        };
+
+        // Add event listeners to log buttons in modal
+        modalBody.querySelectorAll(".log-exercise-btn").forEach((btn) => {
+          btn.addEventListener("click", function (e) {
+            e.stopPropagation();
+            const exerciseName = this.dataset.exercise;
+            document.getElementById("logExerciseName").value = exerciseName;
+
+            // Check if there's previous data for this exercise
+            const previousData = getPreviousExerciseData(exerciseName);
+            if (previousData) {
+              document.getElementById("logExerciseSets").value =
+                previousData.sets || "";
+              document.getElementById("logExerciseReps").value =
+                previousData.reps || "";
+              document.getElementById("logExerciseWeight").value =
+                previousData.weight || "";
+            }
+
+            const logModal = new bootstrap.Modal(
+              document.getElementById("logExerciseModal")
+            );
+            logModal.show();
+          });
+        });
+
+        const modal = new bootstrap.Modal(
+          document.getElementById("workoutDetailsModal")
+        );
+        modal.show();
+      }
+
+      // Get previous exercise data for auto-fill
+      function getPreviousExerciseData(exerciseName) {
+        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+        if (!currentUser.exerciselog) return null;
+
+        const exerciseHistory = currentUser.exerciselog
+          .filter(
+            (entry) =>
+              entry.exerciseName.toLowerCase() === exerciseName.toLowerCase()
+          )
+          .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        return exerciseHistory.length > 0 ? exerciseHistory[0] : null;
+      }
+
+      // Calendar functionality
+      let currentMonth = new Date().getMonth();
+      let currentYear = new Date().getFullYear();
+
+      function generateCalendar() {
+        const calendarGrid = document.getElementById("calendarGrid");
+        const currentMonthBtn = document.getElementById("currentMonthBtn");
+
+        // Clear existing calendar
+        calendarGrid.innerHTML = "";
+
+        // Set the current month button text
+        const monthNames = [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
+        ];
+        currentMonthBtn.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+
+        // Add day headers
+        const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+        dayNames.forEach((day) => {
+          const dayHeader = document.createElement("div");
+          dayHeader.className = "calendar-day-header";
+          dayHeader.textContent = day;
+          calendarGrid.appendChild(dayHeader);
+        });
+
+        // Get first day of month and total days in month
+        const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+        const daysInMonth = new Date(
+          currentYear,
+          currentMonth + 1,
+          0
+        ).getDate();
+
+        // Get days from previous month
+        const daysInPrevMonth = new Date(
+          currentYear,
+          currentMonth,
+          0
+        ).getDate();
+
+        // Add days from previous month
+        for (let i = firstDay - 1; i >= 0; i--) {
+          const day = document.createElement("div");
+          day.className = "calendar-day";
+          day.textContent = daysInPrevMonth - i;
+          day.style.color = "var(--text-secondary)";
+          calendarGrid.appendChild(day);
+        }
+
+        // Add days from current month
+        const today = new Date();
+        for (let i = 1; i <= daysInMonth; i++) {
+          const day = document.createElement("div");
+          day.className = "calendar-day";
+          day.textContent = i;
+
+          // Check if this is today
+          if (
+            i === today.getDate() &&
+            currentMonth === today.getMonth() &&
+            currentYear === today.getFullYear()
+          ) {
+            day.classList.add("active");
+          }
+
+          // Check if this day has workouts
+          const hasWorkout = workoutData.some((workout) => {
+            const workoutDate = workout.date;
+            return (
+              workoutDate.getDate() === i &&
+              workoutDate.getMonth() === currentMonth &&
+              workoutDate.getFullYear() === currentYear
+            );
+          });
+
+          if (hasWorkout) {
+            day.classList.add("has-workout");
+          }
+
+          // Add click event to show workouts for this day
+          day.addEventListener("click", () => showWorkoutsForDay(i));
+
+          calendarGrid.appendChild(day);
+        }
+
+        // Add days from next month to fill the grid
+        const totalCells = Math.ceil((firstDay + daysInMonth) / 7) * 7;
+        const daysFromNextMonth = totalCells - (firstDay + daysInMonth);
+
+        for (let i = 1; i <= daysFromNextMonth; i++) {
+          const day = document.createElement("div");
+          day.className = "calendar-day";
+          day.textContent = i;
+          day.style.color = "var(--text-secondary)";
+          calendarGrid.appendChild(day);
+        }
+      }
+
+      function showWorkoutsForDay(day) {
+        const workouts = workoutData.filter((workout) => {
+          const workoutDate = workout.date;
+          return (
+            workoutDate.getDate() === day &&
+            workoutDate.getMonth() === currentMonth &&
+            workoutDate.getFullYear() === currentYear
+          );
+        });
+
+        if (workouts.length > 0) {
+          const modalTitle = document.getElementById("workoutDetailsTitle");
+          const modalBody = document.getElementById("workoutDetailsBody");
+
+          modalTitle.textContent = `Workouts on ${
+            currentMonth + 1
+          }/${day}/${currentYear}`;
+          modalBody.innerHTML = "";
+
+          workouts.forEach((workout) => {
+            const workoutElement = document.createElement("div");
+            workoutElement.className = "mb-3";
+            workoutElement.innerHTML = `
+          <h6>${workout.type}</h6>
+          <p>Status: ${
+            workout.completed
+              ? '<span class="badge bg-success">Completed</span>'
+              : '<span class="badge bg-secondary">Planned</span>'
+          }</p>
+          <div class="exercise-details show">
+            ${workout.exercises
+              .map(
+                (ex) => `
+              <div class="exercise-item">
+                <div>${ex.name}</div>
+                <div>${ex.sets}x${ex.reps} ${
+                  ex.weight ? `@ ${ex.weight}` : ""
+                }</div>
+              </div>
+            `
+              )
+              .join("")}
+          </div>
+        `;
+
+            modalBody.appendChild(workoutElement);
+          });
+
+          // Don't show complete button if showing multiple workouts
+          document.getElementById("completeWorkoutBtn").style.display =
+            workouts.length === 1 ? "block" : "none";
+
+          const modal = new bootstrap.Modal(
+            document.getElementById("workoutDetailsModal")
+          );
+          modal.show();
+        } else {
+          alert(
+            `No workouts recorded for ${currentMonth + 1}/${day}/${currentYear}`
+          );
+        }
+      }
+
+      // Calendar navigation
+      document.getElementById("prevMonthBtn").addEventListener("click", () => {
+        currentMonth--;
+        if (currentMonth < 0) {
+          currentMonth = 11;
+          currentYear--;
+        }
+        generateCalendar();
+      });
+
+      document.getElementById("nextMonthBtn").addEventListener("click", () => {
+        currentMonth++;
+        if (currentMonth > 11) {
+          currentMonth = 0;
+          currentYear++;
+        }
+        generateCalendar();
+      });
+
+      // Add test data function
+      function addTestData() {
+        const currentUser =
+          JSON.parse(localStorage.getItem("currentUser")) || {};
+        if (!currentUser.exerciselog) {
+          currentUser.exerciselog = [];
+        }
+
+        // Clear existing exercise log
+        currentUser.exerciselog = [];
+
+        // Generate test data for the last 12 weeks
+        const today = new Date();
+        const exercises = ["bench press", "squat", "deadlift"];
+
+        // Generate progressive weights for each exercise
+        const weights = {
+          "bench press": [
+            60, 62.5, 65, 67.5, 70, 72.5, 75, 77.5, 80, 82.5, 85, 87.5,
+          ],
+          squat: [
+            100, 102.5, 105, 107.5, 110, 112.5, 115, 117.5, 120, 122.5, 125,
+            127.5,
+          ],
+          deadlift: [
+            120, 122.5, 125, 127.5, 130, 132.5, 135, 137.5, 140, 142.5, 145,
+            147.5,
+          ],
+        };
+
+        // Add workouts for each week
+        for (let week = 0; week < 12; week++) {
+          const weekDate = new Date(today);
+          weekDate.setDate(today.getDate() - (11 - week) * 7); // Start from 11 weeks ago
+
+          // Add 2-3 workouts per week
+          const workoutsThisWeek = Math.floor(Math.random() * 2) + 2;
+
+          for (let workout = 0; workout < workoutsThisWeek; workout++) {
+            const workoutDate = new Date(weekDate);
+            workoutDate.setDate(weekDate.getDate() + workout * 2); // Space workouts 2 days apart
+
+            exercises.forEach((exercise) => {
+              // Add some random variation to the weights
+              const baseWeight = weights[exercise][week];
+              const variation = (Math.random() - 0.5) * 2.5; // ±2.5kg variation
+              const weight = Math.round((baseWeight + variation) * 2) / 2; // Round to nearest 0.5
+
+              currentUser.exerciselog.push({
+                exerciseName: exercise,
+                sets: 3,
+                reps: 5,
+                weight: weight,
+                date: workoutDate.toISOString(),
+              });
+            });
+          }
+        }
+
+        // Sort exercise log by date (oldest to newest)
+        currentUser.exerciselog.sort(
+          (a, b) => new Date(a.date) - new Date(b.date)
+        );
+
+        // Save the test data
+        localStorage.setItem("currentUser", JSON.stringify(currentUser));
+
+        // Update the dashboard
+        updateStats();
+        updateStrengthChart();
+
+        alert("Test data has been added! Check the Strength Progress chart.");
+      }
+
+      // Add test button to the chart container
+      document.querySelector(".chart-container").insertAdjacentHTML(
+        "beforeend",
+        `
+        <div class="mt-3 text-center">
+          <button class="btn btn-sm btn-outline-primary" onclick="addTestData()">
+            Add Test Data
+          </button>
+        </div>
+      `
+      );
+    </script>
+  </body>
+</html>

@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LIFTOLOGY | AI Fitness Plan Generator</title>
+
+    <!-- Preload critical assets -->
+    <link
+      rel="preload"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      as="style"
+    />
+    <link
+      rel="preload"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+      as="script"
+    />
+    <link
+      rel="preload"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Condensed:wght@700&display=swap"
+      as="style"
+    />
+
+    <!-- Bootstrap 5 CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Google Fonts - Optimized -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Condensed:wght@700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Icon -->
+    <link rel="icon" type="image/x-icon" href="images/weightlifter.png" />
+
+    <!-- Font Awesome - Optimized -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/form.css" />
+    <!-- Add SweetAlert2 CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css"
+    />
+    <style>
+      /* SweetAlert2 Custom Styles */
+      .swal2-popup {
+        border-radius: var(--radius-lg) !important;
+        box-shadow: var(--shadow-lg) !important;
+        border: 1px solid var(--border-color) !important;
+      }
+
+      .swal2-title {
+        color: var(--text-primary) !important;
+        font-family: "Montserrat", sans-serif !important;
+        font-weight: 600 !important;
+      }
+
+      .swal2-content {
+        color: var(--text-secondary) !important;
+        font-family: "Montserrat", sans-serif !important;
+      }
+
+      .swal2-confirm {
+        background-color: var(--primary) !important;
+        border-radius: var(--radius-md) !important;
+        font-family: "Montserrat", sans-serif !important;
+        font-weight: 500 !important;
+        box-shadow: var(--shadow-sm) !important;
+        transition: all 0.3s ease !important;
+      }
+
+      .swal2-confirm:hover {
+        background-color: var(--primary-dark) !important;
+        transform: translateY(-2px) !important;
+        box-shadow: var(--shadow-md) !important;
+      }
+
+      .swal2-timer-progress-bar {
+        background: var(--primary) !important;
+      }
+
+      /* Success icon color */
+      .swal2-icon.swal2-success {
+        border-color: var(--primary) !important;
+      }
+
+      .swal2-icon.swal2-success [class^="swal2-success-line"] {
+        background-color: var(--primary) !important;
+      }
+
+      .swal2-icon.swal2-success .swal2-success-ring {
+        border-color: var(--primary) !important;
+      }
+
+      /* Error icon color */
+      .swal2-icon.swal2-error {
+        border-color: var(--primary) !important;
+      }
+
+      .swal2-icon.swal2-error [class^="swal2-x-mark-line"] {
+        background-color: var(--primary) !important;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Navigation -->
+    <nav id="navbar" class="navbar navbar-expand-lg navbar-light fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="index.html">LIFT<span>OLOGY</span></a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="index.html#features">Features</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="index.html#how-it-works"
+                >How It Works</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link nav-cta" href="form.html">Get Your Plan</a>
+            </li>
+            <li class="nav-item">
+              <button
+                class="theme-toggle"
+                id="themeToggle"
+                aria-label="Toggle theme"
+              >
+                <i class="fas fa-moon"></i>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Form Section -->
+    <section class="form-section">
+      <div class="container">
+        <div class="form-card">
+          <h1 class="form-title">
+            Get Your <span>AI-Generated</span> Diet Plan
+          </h1>
+          <form id="predictForm">
+            <div class="row">
+              <div class="col-6">
+                <div class="form-floating">
+                  <input
+                    type="number"
+                    id="calories"
+                    class="form-control"
+                    placeholder="Calories"
+                    required
+                    min="0"
+                  />
+                  <p class="text-danger d-none">
+                    Please enter a valid number of calories
+                  </p>
+                  <label for="calories">Calories</label>
+                </div>
+              </div>
+            
+              <div class="col-6">
+                <div class="form-floating">
+                  <input
+                    type="number"
+                    id="fatContent"
+                    class="form-control"
+                    placeholder="Fat Content (g)"
+                    required
+                    min="0"
+                    step="0.1"
+                  />
+                  <p class="text-danger d-none">
+                    Please enter a valid fat content
+                  </p>
+                  <label for="fatContent">Fat Content (g)</label>
+                </div>
+              </div>
+           
+              <div class="col-6">
+                <div class="form-floating">
+                  <input
+                    type="number"
+                    id="saturatedFatContent"
+                    class="form-control"
+                    placeholder="Saturated Fat Content (g)"
+                    required
+                    min="0"
+                    step="0.1"
+                  />
+                  <p class="text-danger d-none">
+                    Please enter a valid saturated fat content
+                  </p>
+                  <label for="saturatedFatContent"
+                    >Saturated Fat Content (g)</label
+                  >
+                </div>
+              </div>
+            
+              <div class="col-6">
+                <div class="form-floating">
+                  <input
+                    type="number"
+                    id="cholesterolContent"
+                    class="form-control"
+                    placeholder="Cholesterol Content (mg)"
+                    required
+                    min="0"
+                  />
+                  <p class="text-danger d-none">
+                    Please enter a valid cholesterol content
+                  </p>
+                  <label for="cholesterolContent"
+                    >Cholesterol Content (mg)</label
+                  >
+                </div>
+              </div>
+            
+              <div class="col-6">
+                <div class="form-floating">
+                  <input
+                    type="number"
+                    id="sodiumContent"
+                    class="form-control"
+                    placeholder="Sodium Content (mg)"
+                    required
+                    min="0"
+                  />
+                  <p class="text-danger d-none">
+                    Please enter a valid sodium content
+                  </p>
+                  <label for="sodiumContent">Sodium Content (mg)</label>
+                </div>
+              </div>
+            
+              <div class="col-6">
+                <div class="form-floating">
+                  <input
+                    type="number"
+                    id="carbohydrateContent"
+                    class="form-control"
+                    placeholder="Carbohydrate Content (g)"
+                    required
+                    min="0"
+                    step="0.1"
+                  />
+                  <p class="text-danger d-none">
+                    Please enter a valid carbohydrate content
+                  </p>
+                  <label for="carbohydrateContent"
+                    >Carbohydrate Content (g)</label
+                  >
+                </div>
+              </div>
+            
+              <div class="col-6">
+                <div class="form-floating">
+                  <input
+                    type="number"
+                    id="fiberContent"
+                    class="form-control"
+                    placeholder="Fiber Content (g)"
+                    required
+                    min="0"
+                    step="0.1"
+                  />
+                  <p class="text-danger d-none">
+                    Please enter a valid fiber content
+                  </p>
+                  <label for="fiberContent">Fiber Content (g)</label>
+                </div>
+              </div>
+            
+              <div class="col-6">
+                <div class="form-floating">
+                  <input
+                    type="number"
+                    id="sugarContent"
+                    class="form-control"
+                    placeholder="Sugar Content (g)"
+                    required
+                    min="0"
+                    step="0.1"
+                  />
+                  <p class="text-danger d-none">
+                    Please enter a valid sugar content
+                  </p>
+                  <label for="sugarContent">Sugar Content (g)</label>
+                </div>
+              </div>
+            
+              <div class="col-6">
+                <div class="form-floating">
+                  <input
+                    type="number"
+                    id="proteinContent"
+                    class="form-control"
+                    placeholder="Protein Content (g)"
+                    required
+                    min="0"
+                    step="0.1"
+                  />
+                  <p class="text-danger d-none">
+                    Please enter a valid protein content
+                  </p>
+                  <label for="proteinContent">Protein Content (g)</label>
+                </div>
+              </div>
+            
+              <div class="col-6">
+                <div class="form-floating">
+                  <input
+                    type="number"
+                    id="numRecommendations"
+                    class="form-control"
+                    placeholder="Number of Recommendations"
+                    min="1"
+                    max="10"
+                  />
+                  <p class="text-danger d-none">
+                    Please enter a number between 1 and 10
+                  </p>
+                  <label for="numRecommendations"
+                    >Number of Recommendations (Optional)</label
+                  >
+                </div>
+              </div>
+            </div>
+
+            <button class="btn btn-submit" type="submit">
+              Generate My Diet Plan <i class="fas fa-arrow-right ms-2"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dependencies -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+      defer
+    ></script>
+    <script>
+      const API_BASE_URL = "https://liftologybackend-production.up.railway.app";
+
+      // Check authentication and plan status
+      document.addEventListener("DOMContentLoaded", async () => {
+        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
+        if (!currentUser) {
+          window.location.href = "signin-signup.html";
+          return;
+        } else if (currentUser.diet_plan.output) {
+          // User already has a plan
+           window.location.href = "diet.html";
+           return;
+        }
+      });
+
+      // Form submission handler
+      document
+        .getElementById("predictForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          // Validate all required fields
+          const requiredFields = [
+            "calories",
+            "fatContent",
+            "saturatedFatContent",
+            "cholesterolContent",
+            "sodiumContent",
+            "carbohydrateContent",
+            "fiberContent",
+            "sugarContent",
+            "proteinContent",
+          ];
+
+          let isValid = true;
+          requiredFields.forEach((fieldId) => {
+            const input = document.getElementById(fieldId);
+            if (!input.value || parseFloat(input.value) < 0) {
+              input.classList.add("is-invalid");
+              input.nextElementSibling.classList.remove("d-none");
+              isValid = false;
+            } else {
+              input.classList.remove("is-invalid");
+              input.classList.add("is-valid");
+              input.nextElementSibling.classList.add("d-none");
+            }
+          });
+
+          if (!isValid) {
+            showErrorAlert(
+              "Please fill in all required fields with valid values."
+            );
+            return;
+          }
+
+          const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+          if (!currentUser) {
+            window.location.href = "signin-signup.html";
+            return;
+          }
+
+          const payload = {
+            nutrition_input: [
+              parseFloat(document.getElementById("calories").value),
+              parseFloat(document.getElementById("fatContent").value),
+              parseFloat(document.getElementById("saturatedFatContent").value),
+              parseFloat(document.getElementById("cholesterolContent").value),
+              parseFloat(document.getElementById("sodiumContent").value),
+              parseFloat(document.getElementById("carbohydrateContent").value),
+              parseFloat(document.getElementById("fiberContent").value),
+              parseFloat(document.getElementById("sugarContent").value),
+              parseFloat(document.getElementById("proteinContent").value),
+            ],
+            ingredients: [],
+            params: {
+              n_neighbors: document.getElementById("numRecommendations").value
+                ? parseInt(document.getElementById("numRecommendations").value)
+                : 5,
+              return_distance: false,
+            },
+          };
+
+          try {
+            // Generate diet plan
+            const response = await fetch(
+              `${API_BASE_URL}/food-recommendation/${currentUser.user_info.email}`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${currentUser.token}`,
+                },
+                body: JSON.stringify(payload),
+              }
+            );
+
+            if (!response.ok) {
+              const errorData = await response.json().catch(() => null);
+              throw new Error(
+                errorData?.message ||
+                  `Server error: ${response.status} ${response.statusText}`
+              );
+            }
+
+            const result = await response.json();
+
+            if (!result || result.status !== "success") {
+              throw new Error(
+                result?.message ||
+                  "Failed to generate plan: Invalid response from server"
+              );
+            }
+
+            // Update the currentUser object with the diet plan data
+            if (!currentUser.diet_plan) {
+              currentUser.diet_plan = {};
+            }
+            currentUser.diet_plan.input = payload;
+            currentUser.diet_plan.output = result.recommendation.output; // Access the nested output array
+            localStorage.setItem("currentUser", JSON.stringify(currentUser));
+            
+            // Show success message before redirecting
+            Swal.fire({
+              title: 'Success!',
+              text: 'Your diet plan has been generated successfully.',
+              icon: 'success',
+              confirmButtonText: 'View My Plan',
+              confirmButtonColor: '#e60026'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                window.location.href = "diet.html";
+              }
+            });
+          } catch (error) {
+            console.error("Error details:", error);
+            showErrorAlert(
+              error.message ||
+                "Failed to generate your diet plan. Please try again."
+            );
+          }
+        });
+
+      // Navbar scroll effect
+      window.addEventListener("scroll", function () {
+        const navbar = document.querySelector(".navbar");
+        if (window.scrollY > 50) {
+          navbar.classList.add("scrolled");
+        } else {
+          navbar.classList.remove("scrolled");
+        }
+      });
+
+      // Theme Toggle Functionality
+      const themeToggle = document.getElementById("themeToggle");
+      const prefersDarkScheme = window.matchMedia(
+        "(prefers-color-scheme: dark)"
+      );
+
+      // Check for saved theme preference or use system preference
+      const currentTheme =
+        localStorage.getItem("theme") ||
+        (prefersDarkScheme.matches ? "dark" : "light");
+
+      // Apply the current theme
+      if (currentTheme === "dark") {
+        document.documentElement.setAttribute("data-theme", "dark");
+        themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+      } else {
+        document.documentElement.removeAttribute("data-theme");
+        themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+      }
+
+      // Toggle theme on button click
+      themeToggle.addEventListener("click", () => {
+        let theme;
+        if (document.documentElement.getAttribute("data-theme")) {
+          document.documentElement.removeAttribute("data-theme");
+          theme = "light";
+          themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+        } else {
+          document.documentElement.setAttribute("data-theme", "dark");
+          theme = "dark";
+          themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        }
+        localStorage.setItem("theme", theme);
+      });
+
+      // Listen for system theme changes
+      prefersDarkScheme.addEventListener("change", (e) => {
+        if (!localStorage.getItem("theme")) {
+          if (e.matches) {
+            document.documentElement.setAttribute("data-theme", "dark");
+            themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+          } else {
+            document.documentElement.removeAttribute("data-theme");
+            themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+          }
+        }
+      });
+
+      // Show error alert
+      function showErrorAlert(message) {
+        const errorAlert = document.createElement("div");
+        errorAlert.className = "alert alert-danger alert-dismissible fade show";
+        errorAlert.style.position = "fixed";
+        errorAlert.style.top = "20px";
+        errorAlert.style.left = "50%";
+        errorAlert.style.transform = "translateX(-50%)";
+        errorAlert.style.zIndex = "9999";
+        errorAlert.style.minWidth = "300px";
+        errorAlert.style.textAlign = "center";
+        errorAlert.innerHTML = `
+               <strong>Error!</strong> ${message}
+               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+             `;
+
+        document.body.appendChild(errorAlert);
+
+        // Auto dismiss after 5 seconds
+        setTimeout(() => {
+          errorAlert.remove();
+        }, 5000);
+      }
+    </script>
+    <!-- Add SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+  </body>
+</html>

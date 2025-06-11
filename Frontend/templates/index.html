@@ -1,0 +1,2166 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="LIFTOLOGY - AI-Powered Fitness Optimization Platform" />
+    <meta name="theme-color" content="#dc3545" />
+    <title>LIFTOLOGY | AI-Powered Fitness Optimization</title>
+    
+    <!-- Preload critical assets -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Roboto+Condensed:wght@400;700&display=swap" as="style" />
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" as="style" />
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" />
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="images/weightlifter.png" />
+    
+    <!-- Stylesheets -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    
+    <!-- Defer non-critical JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
+    
+    <!-- Inline critical CSS -->
+    <style>
+      :root {
+        /* Light theme (default) */
+        --primary: #dc3545;
+        --primary-dark: #bb2d3b;
+        --text-primary: #000;
+        --text-secondary: #4a4a4a;
+        --bg-primary: #ffffff;
+        --bg-secondary: #f8f8f8;
+        --bg-tertiary: #e8e8e8;
+        --card-bg: #ffffff;
+        --border-color: #d0d0d0;
+        --success: #00c853;
+        --warning: #ffab00;
+        --darker: #1a1a1a;
+        --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.08);
+        --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.12);
+        --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.15);
+        --radius-sm: 8px;
+        --radius-md: 12px;
+        --radius-lg: 16px;
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        --gradient-primary: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-primary) 100%);
+        --gradient-card: linear-gradient(135deg, var(--card-bg) 0%, var(--bg-secondary) 50%, var(--card-bg) 100%);
+        --gradient-hover: linear-gradient(135deg, var(--card-bg) 0%, var(--bg-tertiary) 50%, var(--card-bg) 100%);
+      }
+
+      /* Dark theme variables */
+      [data-theme="dark"] {
+        --primary: #ff4d5d;
+        --primary-dark: #ff2d3f;
+        --text-primary: #ffffff;
+        --text-secondary: #cccccc;
+        --bg-primary: #121212;
+        --bg-secondary: #1e1e1e;
+        --bg-tertiary: #2a2a2a;
+        --card-bg: #1e1e1e;
+        --border-color: #404040;
+        --darker: #0a0a0a;
+        --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+        --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
+        --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
+      }
+
+      /* Base Styles */
+      body {
+        font-family: "Montserrat", sans-serif;
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+        line-height: 1.6;
+        transition: var(--transition);
+      }
+
+      h1, h2, h3, h4, h5, h6 {
+        font-family: "Roboto Condensed", sans-serif;
+        font-weight: 700;
+        color: var(--text-primary);
+      }
+
+      /* Common Components */
+      .section-header {
+        text-align: center;
+        margin-bottom: 4rem;
+      }
+
+      .section-header h2 {
+        font-size: 2.75rem;
+        margin-bottom: 1.25rem;
+        letter-spacing: -0.5px;
+      }
+
+      .section-header p {
+        font-size: 1.125rem;
+        color: var(--text-secondary);
+        max-width: 700px;
+        margin: 0 auto;
+      }
+
+      /* Button Styles */
+      .btn-primary, .btn-outline, .cta-btn {
+        padding: 15px 30px;
+        border-radius: 30px;
+        font-weight: 600;
+        transition: var(--transition);
+        text-decoration: none;
+        display: inline-block;
+      }
+
+      .btn-primary {
+        background-color: var(--primary);
+        color: var(--bg-primary);
+        border: none;
+      }
+
+      .btn-outline {
+        color: var(--primary);
+        border: 2px solid var(--primary);
+        padding: 13px 28px;
+      }
+
+      .btn-primary:hover, .btn-outline:hover, .cta-btn:hover {
+        background-color: var(--primary-dark);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(220, 53, 69, 0.3);
+        color: var(--bg-primary);
+      }
+
+      /* Card Styles */
+      .feature-card, .testimonial-card, .diet-feature-item {
+        background: var(--gradient-card);
+        border-radius: var(--radius-lg);
+        padding: 2.5rem 2rem;
+        transition: var(--transition);
+        height: 100%;
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--border-color);
+      }
+
+      .feature-card:hover, .testimonial-card:hover, .diet-feature-item:hover {
+        transform: translateY(-10px);
+        box-shadow: var(--shadow-lg);
+        border-color: var(--primary);
+        background: var(--gradient-hover);
+      }
+
+      /* Responsive Design */
+      @media (max-width: 992px) {
+        .section-header h2 {
+          font-size: 2.5rem;
+        }
+        
+        .hero {
+          padding: 140px 0 80px;
+        }
+        
+        .hero h1 {
+          font-size: 3rem;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .section-header h2 {
+          font-size: 2rem;
+        }
+        
+        .hero h1 {
+          font-size: 2.5rem;
+        }
+        
+        .hero p {
+          font-size: 1.125rem;
+        }
+      }
+
+      @media (max-width: 576px) {
+        .section-header h2 {
+          font-size: 1.75rem;
+        }
+        
+        .hero h1 {
+          font-size: 2rem;
+        }
+        
+        .container {
+          padding: 0 1rem;
+        }
+      }
+
+      /* Performance Optimizations */
+      .hero-image, .cv-image, .diet-image {
+        will-change: transform;
+        backface-visibility: hidden;
+      }
+
+      /* Animation Optimizations */
+      @keyframes gradientAnimation {
+        0%, 100% { background-size: 100% 100%; }
+        50% { background-size: 150% 150%; }
+      }
+
+      /* Reduced Motion */
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+          scroll-behavior: auto !important;
+        }
+      }
+
+      /* Navigation */
+      .navbar {
+        background-color: var(--bg-primary) !important;
+        box-shadow: var(--shadow-sm);
+        padding: 1.25rem 0;
+        opacity: 0.9;
+        transition: var(--transition);
+      }
+
+      .navbar.scrolled {
+        padding: 1rem 0;
+        box-shadow: var(--shadow-md);
+      }
+
+      .navbar-brand {
+        font-weight: 700;
+        font-size: 1.8rem;
+        color: var(--text-primary);
+        letter-spacing: -0.5px;
+      }
+
+      /* Navbar Toggler Styles */
+      .navbar-toggler {
+        border: none;
+        padding: 0.5rem;
+        transition: all 0.2s ease;
+        background: transparent !important;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .navbar-toggler:focus {
+        box-shadow: none;
+      }
+
+      .navbar-toggler-icon {
+        width: 24px;
+        height: 2px;
+        background-color:var(--primary) !important;
+        position: relative;
+        transition: all 0.2s ease;
+        background-image: none;
+      }
+
+      .navbar-toggler-icon::before,
+      .navbar-toggler-icon::after {
+        content: '';
+        position: absolute;
+        width: 24px;
+        height: 2px;
+        background-color: var(--primary);
+        transition: all 0.2s ease;
+      }
+
+      .navbar-toggler-icon::before {
+        top: -8px;
+      }
+
+      .navbar-toggler-icon::after {
+        bottom: -8px;
+      }
+
+      /* Animated hamburger to X */
+      .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
+        background-color: transparent !important;
+      }
+
+      .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon::before {
+        transform: rotate(45deg);
+        top: 0;
+      }
+
+      .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon::after {
+        transform: rotate(-45deg);
+        bottom: 0;
+      }
+
+      .navbar-toggler:hover .navbar-toggler-icon,
+      .navbar-toggler:hover .navbar-toggler-icon::before,
+      .navbar-toggler:hover .navbar-toggler-icon::after {
+        background-color: var(--primary-dark);
+      }
+
+      [data-theme="dark"] .navbar-toggler-icon,
+      [data-theme="dark"] .navbar-toggler-icon::before,
+      [data-theme="dark"] .navbar-toggler-icon::after {
+        background-color: var(--primary);
+      }
+
+      @media (max-width: 992px) {
+        .navbar-toggler {
+          width: 45px;
+          height: 45px;
+        }
+      }
+
+      @media (max-width: 576px) {
+        .navbar-toggler {
+          width: 40px;
+          height: 40px;
+        }
+      }
+
+      .navbar-brand:hover {
+        color: var(--text-primary);
+      }
+
+      .navbar-brand span {
+        color: var(--primary);
+      }
+
+      .nav-link {
+        color: var(--text-primary) !important;
+        font-weight: 500;
+        padding: 8px 15px !important;
+        margin: 0 5px;
+        position: relative;
+        transition: all 0.3s ease;
+      }
+
+      .nav-link:hover {
+        color: var(--primary) !important;
+      }
+
+      .nav-link.active {
+        color: var(--primary) !important;
+      }
+
+      .nav-cta {
+        background-color: var(--primary);
+        color: var(--bg-primary) !important;
+        padding: 10px 25px !important;
+        border-radius: 30px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        margin-left: 15px;
+      }
+
+      .nav-cta:hover {
+        background-color: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+        color: var(--bg-primary) !important;
+      }
+      .nav-link.nav-cta.dropdown-toggle:hover {
+        color: #fff !important;
+      }
+
+      /* Theme Toggle Button */
+      .theme-toggle {
+        background: none;
+        border: none;
+        color: var(--text-primary);
+        cursor: pointer;
+        font-size: 1.25rem;
+        padding: 0.5rem;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        margin-left: 15px;
+        z-index: 1000;
+      }
+
+      .theme-toggle:hover {
+        background-color: var(--bg-secondary);
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.15);
+      }
+
+      /* Hero Section */
+      .hero {
+        padding: 160px 0 100px;
+        background: linear-gradient(
+          135deg,
+          var(--bg-primary) 0%,
+          var(--bg-primary) 40%,
+          rgba(220, 53, 69, 0.1) 50%,
+          rgba(220, 53, 69, 0.2) 60%,
+          rgba(220, 53, 69, 0.3) 70%,
+          rgba(220, 53, 59, 0.4) 80%,
+          rgba(220, 53, 69, 0.5) 85%,
+          rgba(220, 53, 59, 0.6) 90%,
+          rgba(220, 53, 69, 0.7) 95%,
+          rgba(220, 53, 59, 0.8) 100%
+        );
+        position: relative;
+        overflow: hidden;
+        animation: gradientAnimation 8s ease-in-out infinite;
+      }
+
+      @keyframes gradientAnimation {
+        0% {
+          background-size: 100% 100%;
+        }
+        50% {
+          background-size: 150% 150%;
+        }
+        100% {
+          background-size: 100% 100%;
+        }
+      }
+
+      .hero::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(
+          circle at 70% 50%,
+          rgba(220, 53, 69, 0.1) 0%,
+          transparent 70%
+        );
+        pointer-events: none;
+      }
+
+      .hero h1 {
+        font-size: 3.75rem;
+        margin-bottom: 1.5rem;
+        line-height: 1.2;
+        letter-spacing: -0.5px;
+      }
+
+      .hero p {
+        font-size: 1.25rem;
+        color: var(--text-secondary);
+        margin-bottom: 2.5rem;
+        max-width: 600px;
+      }
+
+      .hero-btns {
+        margin-top: 30px;
+      }
+      .hero-btns a:first-child {
+        margin-right: 1rem;
+      }
+      .hero-btns a:first-child:active {
+        background-color: var(--primary-dark);
+      }
+
+      @media (max-width: 1200px) {
+        .hero-btns {
+          display: flex;
+          flex-direction: column;
+          align-items: left;
+          justify-content: space-between;
+        }
+        .hero-btns > .btn-primary {
+          margin-bottom: 10px;
+          margin-right: 0 !important;
+        }
+      }
+
+      .btn-primary {
+        background-color: var(--primary);
+        color: var(--bg-primary);
+        padding: 15px 30px;
+        border-radius: 30px;
+        font-weight: 600;
+        border: none;
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary:hover,
+      .btn-outline:hover {
+        background-color: var(--primary-dark);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(220, 53, 69, 0.3);
+      }
+
+      .btn-outline {
+        color: var(--primary);
+        border: 2px solid var(--primary);
+        padding: 13px 28px;
+        border-radius: 30px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+
+      .btn-outline:hover {
+        color: #fff;
+      }
+
+      .hero-image {
+        height: 500px;
+        overflow: auto;
+      }
+
+      /* Features Section */
+      .features {
+        padding: 120px 0;
+        background: linear-gradient(
+          135deg,
+          var(--bg-secondary) 0%,
+          var(--bg-primary) 50%,
+          var(--bg-secondary) 100%
+        );
+      }
+
+      .section-header {
+        text-align: center;
+        margin-bottom: 4rem;
+      }
+
+      .section-header h2 {
+        font-size: 2.75rem;
+        margin-bottom: 1.25rem;
+        letter-spacing: -0.5px;
+      }
+
+      .section-header p {
+        font-size: 1.125rem;
+        color: var(--text-secondary);
+        max-width: 700px;
+        margin: 0 auto;
+      }
+
+      .feature-card {
+        background: linear-gradient(
+          135deg,
+          var(--card-bg) 0%,
+          var(--bg-secondary) 50%,
+          var(--card-bg) 100%
+        );
+        border-radius: var(--radius-lg);
+        padding: 2.5rem 2rem;
+        transition: var(--transition);
+        height: 100%;
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--border-color);
+      }
+
+      .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: var(--shadow-lg);
+        border-color: var(--primary);
+        background: linear-gradient(
+          135deg,
+          var(--card-bg) 0%,
+          var(--bg-tertiary) 50%,
+          var(--card-bg) 100%
+        );
+      }
+
+      .feature-icon {
+        font-size: 2.5rem;
+        margin-bottom: 25px;
+        color: var(--primary);
+      }
+
+      .feature-card h3 {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+      }
+
+      .feature-card p {
+        color: var(--text-secondary);
+        line-height: 1.6;
+      }
+
+      /* CV Feature Section */
+      .cv-feature {
+        padding: 120px 0;
+        background: linear-gradient(
+          135deg,
+          var(--bg-primary) 0%,
+          var(--bg-secondary) 50%,
+          var(--bg-primary) 100%
+        );
+      }
+
+      .cv-highlight {
+        background: linear-gradient(
+          135deg,
+          var(--bg-secondary) 0%,
+          var(--bg-tertiary) 50%,
+          var(--bg-secondary) 100%
+        );
+        padding: 3rem;
+        border-radius: var(--radius-lg);
+        height: 100%;
+        box-shadow: var(--shadow-lg);
+      }
+
+      .cv-highlight h2 {
+        font-size: 2.2rem;
+        margin-bottom: 20px;
+      }
+
+      .cv-highlight .lead {
+        font-size: 1.3rem;
+        color: var(--primary);
+        margin-bottom: 30px;
+        font-weight: 500;
+      }
+
+      .cv-highlight p {
+        color: var(--text-secondary);
+        margin-bottom: 30px;
+        line-height: 1.6;
+      }
+
+      .cv-highlight ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .cv-highlight li {
+        margin-bottom: 15px;
+        color: var(--text-secondary);
+        position: relative;
+        padding-left: 30px;
+      }
+
+      .cv-highlight li::before {
+        content: "\f00c";
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+        position: absolute;
+        left: 0;
+        color: var(--success);
+      }
+
+      .cv-image {
+        height: 90vh;
+
+        overflow: auto;
+      }
+
+      .cv-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        overflow: auto;
+      }
+
+      /* How It Works Section */
+      .how-it-works {
+        padding: 120px 0;
+        background: linear-gradient(
+          135deg,
+          var(--bg-secondary) 0%,
+          var(--bg-primary) 50%,
+          var(--bg-secondary) 100%
+        );
+      }
+
+      .how-it-works .section-header p {
+        color: var(--text-secondary);
+      }
+
+      .step {
+        display: flex;
+        gap: 2rem;
+        margin-bottom: 3rem;
+        position: relative;
+      }
+
+      .step-number {
+        background-color: var(--primary);
+        color: var(--bg-primary);
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+        box-shadow: var(--shadow-md);
+      }
+
+      .step-content {
+        flex-grow: 1;
+      }
+
+      .step-content h3 {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+      }
+
+      .step-content p {
+        color: var(--text-secondary);
+        line-height: 1.6;
+      }
+
+      /* Testimonials */
+      .testimonials {
+        padding: 120px 0;
+        background: linear-gradient(
+          135deg,
+          var(--bg-primary) 0%,
+          var(--bg-secondary) 50%,
+          var(--bg-primary) 100%
+        );
+      }
+
+      .testimonial-card {
+        background: linear-gradient(
+          135deg,
+          var(--card-bg) 0%,
+          var(--bg-secondary) 50%,
+          var(--card-bg) 100%
+        );
+        border-radius: var(--radius-lg);
+        padding: 3rem;
+        box-shadow: var(--shadow-lg);
+        height: 100%;
+        position: relative;
+        border: 1px solid var(--border-color);
+        transition: var(--transition);
+      }
+
+      .testimonial-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-lg);
+        border-color: var(--primary);
+        background: linear-gradient(
+          135deg,
+          var(--card-bg) 0%,
+          var(--bg-tertiary) 50%,
+          var(--card-bg) 100%
+        );
+      }
+
+      .testimonial-card::before {
+        content: '"';
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        font-size: 5rem;
+        color: rgba(10, 132, 255, 0.1);
+        font-family: serif;
+        line-height: 1;
+        z-index: 0;
+      }
+
+      .testimonial-card p {
+        font-style: italic;
+        color: var(--text-primary);
+        margin-bottom: 30px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .testimonial-author {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .author-avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background-color: var(--primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--bg-primary);
+        font-weight: bold;
+        font-size: 1.2rem;
+      }
+
+      .author-info h4 {
+        margin: 0;
+        font-size: 1.1rem;
+      }
+
+      .author-info p {
+        margin: 0;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        font-style: normal;
+      }
+
+      /* CTA Section */
+      .cta-section {
+        padding: 140px 0;
+        background: linear-gradient(
+          135deg,
+          var(--bg-secondary) 0%,
+          var(--bg-primary) 50%,
+          var(--bg-secondary) 100%
+        );
+        color: var(--text-primary);
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .cta-section::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(
+          135deg,
+          rgba(220, 53, 69, 0.08) 0%,
+          rgba(220, 53, 69, 0.15) 50%,
+          rgba(220, 53, 69, 0.08) 100%
+        );
+        z-index: 0;
+      }
+
+      .cta-content {
+        position: relative;
+        z-index: 1;
+      }
+
+      .cta-content h2 {
+        font-size: 3rem;
+        margin-bottom: 1.5rem;
+        letter-spacing: -0.5px;
+      }
+
+      .cta-content p {
+        font-size: 1.25rem;
+        margin-bottom: 3rem;
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+        opacity: 0.9;
+      }
+
+      .cta-btn {
+        background-color: var(--primary);
+        color: var(--bg-primary);
+        padding: 15px 40px;
+        border-radius: 30px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: inline-block;
+        text-decoration: none;
+      }
+
+      .cta-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(220, 53, 69, 0.25);
+        background-color: var(--primary-dark);
+      }
+
+      /* Footer */
+      .footer {
+        background: linear-gradient(
+          135deg,
+          var(--darker) 0%,
+          #000000 50%,
+          var(--darker) 100%
+        );
+        color: var(--text-primary);
+        padding: 100px 0 0;
+      }
+
+      .footer-logo {
+        font-weight: 700;
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+        display: inline-block;
+        color: white;
+      }
+
+      .footer-logo span {
+        color: var(--primary);
+      }
+
+      .footer-about p {
+        color: var(--text-secondary);
+        line-height: 1.6;
+        margin-bottom: 30px;
+      }
+
+      .footer-links h3 {
+        font-size: 1.2rem;
+        margin-bottom: 25px;
+        font-weight: 600;
+        color: white;
+      }
+
+      .footer-links ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .footer-links li {
+        margin-bottom: 12px;
+      }
+
+      .footer-links a {
+        color: var(--text-secondary);
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+
+      .footer-links a:hover {
+        color: var(--primary);
+      }
+
+      .social-icons {
+        display: flex;
+        gap: 15px;
+      }
+
+      .social-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #777;
+        transition: all 0.3s ease;
+      }
+
+      .social-icon:hover {
+        background-color: var(--primary);
+        transform: translateY(-3px);
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.2);
+        color: #fff;
+      }
+
+      .footer-bottom {
+        text-align: center;
+        padding: 30px 0;
+        margin-top: 50px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+      }
+      /*  */
+      .dropdown-menu.overflow-hidden > li:hover > a {
+        background-color: transparent;
+      }
+      .dropdown-menu.overflow-hidden > li:last-child:hover > a {
+        color: red !important;
+      }
+      .logout:hover > a {
+        color: red !important;
+      }
+
+      /* Responsive Adjustments */
+      @media (max-width: 992px) {
+        .theme-toggle {
+          position: fixed;
+          bottom: 90px;
+          right: 20px;
+          background-color: var(--primary);
+          color: var(--bg-primary);
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+          width: 45px;
+          height: 45px;
+          font-size: 1.3rem;
+          margin-left: 0;
+          display: flex !important; /* Force display */
+        }
+
+        .theme-toggle:hover {
+          transform: scale(1.1);
+          background-color: var(--primary-dark);
+          box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+        }
+
+        /* Hide the theme toggle in the navbar on mobile */
+        .navbar .theme-toggle {
+          display: none !important;
+        }
+
+        .hero {
+          padding: 140px 0 80px;
+        }
+
+        .hero h1 {
+          font-size: 3rem;
+        }
+
+        .section-header h2 {
+          font-size: 2.5rem;
+        }
+
+        .cv-highlight {
+          padding: 2rem;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .hero {
+          padding: 120px 0 60px;
+        }
+
+        .hero h1 {
+          font-size: 2.5rem;
+        }
+
+        .hero p {
+          font-size: 1.125rem;
+        }
+
+        .section-header h2 {
+          font-size: 2rem;
+        }
+
+        .step {
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+        }
+
+        .step-number {
+          margin-bottom: 1.5rem;
+        }
+
+        .testimonial-card {
+          padding: 2rem;
+        }
+
+        .cta-content h2 {
+          font-size: 2.5rem;
+        }
+
+        .theme-toggle {
+          bottom: 100px;
+          right: 20px;
+        }
+      }
+
+      @media (max-width: 576px) {
+        .container {
+          padding: 0 1rem;
+        }
+
+        .hero h1 {
+          font-size: 2rem;
+        }
+
+        .section-header h2 {
+          font-size: 1.75rem;
+        }
+
+        .feature-card {
+          padding: 2rem 1.5rem;
+        }
+
+        .theme-toggle {
+          bottom: 110px;
+          right: 15px;
+          width: 40px;
+          height: 40px;
+          font-size: 1.2rem;
+        }
+      }
+      #logo {
+        opacity: 0;
+      }
+
+      /* Chatbot Styles */
+      .chatbot-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+      }
+
+      .chatbot-toggle {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+        transition: all 0.3s ease;
+      }
+
+      .chatbot-toggle:hover {
+        transform: scale(1.1);
+        background-color: var(--primary-dark);
+        box-shadow: 0 6px 16px rgba(220, 53, 69, 0.4);
+      }
+
+      .chatbot-window {
+        position: fixed;
+        bottom: 90px;
+        right: 20px;
+        width: 350px;
+        height: 500px;
+        background-color: var(--bg-primary);
+        border-radius: 12px;
+        box-shadow: 0 5px 25px rgba(220, 53, 69, 0.2);
+        display: none;
+        flex-direction: column;
+        overflow: hidden;
+        border: 1px solid var(--border-color);
+      }
+
+      .chatbot-header {
+        padding: 15px;
+        background-color: var(--primary);
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .chatbot-header h5 {
+        margin: 0;
+        color: white;
+      }
+
+      .close-chatbot {
+        background: none;
+        border: none;
+        color: white;
+        cursor: pointer;
+        font-size: 18px;
+      }
+
+      .chatbot-messages {
+        flex-grow: 1;
+        padding: 15px;
+        overflow-y: auto;
+      }
+
+      .message {
+        margin-bottom: 15px;
+        padding: 10px 15px;
+        border-radius: 15px;
+        max-width: 80%;
+      }
+
+      .message.bot {
+        background-color: var(--bg-secondary);
+        color: var(--text-primary);
+        margin-right: auto;
+      }
+
+      .message.user {
+        background-color: var(--primary);
+        color: white;
+        margin-left: auto;
+      }
+
+      /* Typing Animation */
+      .typing-indicator {
+        display: flex;
+        align-items: center;
+        padding: 10px 15px;
+        background-color: var(--bg-secondary);
+        border-radius: 15px;
+        margin-bottom: 15px;
+        width: fit-content;
+      }
+
+      .typing-indicator span {
+        height: 8px;
+        width: 8px;
+        background-color: var(--text-secondary);
+        border-radius: 50%;
+        display: inline-block;
+        margin: 0 2px;
+        opacity: 0.4;
+      }
+
+      .typing-indicator span:nth-child(1) {
+        animation: typing 1s infinite;
+      }
+
+      .typing-indicator span:nth-child(2) {
+        animation: typing 1s infinite 0.2s;
+      }
+
+      .typing-indicator span:nth-child(3) {
+        animation: typing 1s infinite 0.4s;
+      }
+
+      @keyframes typing {
+        0% {
+          transform: translateY(0);
+          opacity: 0.4;
+        }
+        50% {
+          transform: translateY(-5px);
+          opacity: 0.8;
+        }
+        100% {
+          transform: translateY(0);
+          opacity: 0.4;
+        }
+      }
+
+      .chatbot-input {
+        padding: 15px;
+        display: flex;
+        gap: 10px;
+        border-top: 1px solid var(--border-color);
+      }
+
+      .chatbot-input input {
+        flex-grow: 1;
+        padding: 10px;
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+      }
+
+      .chatbot-input button {
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+      }
+
+      .chatbot-input button:hover {
+        background-color: var(--primary-dark);
+      }
+
+      @media (max-width: 768px) {
+        .chatbot-window {
+          width: calc(100% - 40px);
+          height: 60vh;
+          bottom: 90px;
+        }
+      }
+
+      /* Mobile Theme Toggle Button */
+      .theme-toggle-mobile {
+        display: none;
+        position: fixed;
+        bottom: 90px;
+        right: 20px;
+        background-color: var(--primary);
+        color: var(--bg-primary);
+        border: none;
+        border-radius: 50%;
+        width: 45px;
+        height: 45px;
+        font-size: 1.3rem;
+        cursor: pointer;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+      }
+
+      .theme-toggle-mobile:hover {
+        transform: scale(1.1);
+        background-color: var(--primary-dark);
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+      }
+
+      @media (max-width: 992px) {
+        .theme-toggle-mobile {
+          display: flex;
+        }
+        .theme-toggle {
+          display: none !important;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .theme-toggle-mobile {
+          bottom: 100px;
+        }
+      }
+
+      @media (max-width: 576px) {
+        .theme-toggle-mobile {
+          bottom: 110px;
+          right: 15px;
+          width: 40px;
+          height: 40px;
+          font-size: 1.2rem;
+        }
+      }
+
+      /* Diet Plan System Section */
+      .diet-plan {
+        padding: 120px 0;
+        background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-primary) 100%);
+      }
+
+      .diet-features {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+      }
+
+      .diet-feature-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 1.5rem;
+        padding: 1.5rem;
+        background: linear-gradient(135deg, var(--card-bg) 0%, var(--bg-secondary) 50%, var(--card-bg) 100%);
+        border-radius: var(--radius-lg);
+        transition: var(--transition);
+        border: 1px solid var(--border-color);
+      }
+
+      .diet-feature-item:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-lg);
+        border-color: var(--primary);
+        background: linear-gradient(135deg, var(--card-bg) 0%, var(--bg-tertiary) 50%, var(--card-bg) 100%);
+      }
+
+      .diet-feature-item .feature-icon {
+        font-size: 2rem;
+        color: var(--primary);
+        background: var(--bg-secondary);
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+
+      .diet-feature-item .feature-content h3 {
+        font-size: 1.3rem;
+        margin-bottom: 0.5rem;
+        color: var(--text-primary);
+      }
+
+      .diet-feature-item .feature-content p {
+        color: var(--text-secondary);
+        margin: 0;
+        line-height: 1.6;
+      }
+
+      .diet-image {
+        height: 500px;
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        box-shadow: var(--shadow-lg);
+      }
+
+      @media (max-width: 992px) {
+        .diet-plan {
+          padding: 80px 0;
+        }
+        
+        .diet-feature-item {
+          padding: 1.25rem;
+        }
+        
+        .diet-image {
+          height: 400px;
+          margin-top: 2rem;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .diet-feature-item {
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+        }
+        
+        .diet-feature-item .feature-icon {
+          margin-bottom: 1rem;
+        }
+        
+        .diet-image {
+          height: 300px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav id="navbar" class="navbar navbar-expand-lg navbar-light fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="index.html" aria-label="LIFTOLOGY Home">LIFT<span>OLOGY</span></a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link active" href="index.html#hero" aria-current="page">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="index.html#features">Features</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="index.html#how-it-works">How It Works</a>
+            </li>
+            <li class="nav-item d-lg-none">
+              <a class="nav-link" href="plan.html">Plan</a>
+            </li>
+            <li class="nav-item d-lg-none">
+              <a class="nav-link" href="dashboard.html">Dashboard</a>
+            </li>
+            <li class="nav-item" id="userNav">
+              <a class="nav-link nav-cta" href="form.html">Get Your Plan</a>
+            </li>
+            <li class="nav-item d-lg-none logout">
+              <a class="dropdown-item nav-link" onclick="userManager.logout();" href="#" role="button">Log Out</a>
+            </li>
+            <li class="nav-item">
+              <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+                <i class="fas fa-moon" aria-hidden="true"></i>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+      <!-- Hero Section -->
+      <section id="hero" class="hero">
+        <div class="container">
+          <div class="row align-items-center">
+            <div class="col-lg-5">
+              <div class="hero-content">
+                <h1>Precision Fitness Powered by AI</h1>
+                <p>
+                  LIFTOLOGY combines advanced artificial intelligence with human
+                  physiology to create personalized training programs that
+                  deliver measurable results.
+                </p>
+                <div class="hero-btns">
+                  <a href="form.html" class="btn btn-primary">Start Your Journey</a>
+                  <a href="#how-it-works" class="btn btn-outline">Learn More</a>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-7">
+              <div class="hero-image">
+                <script
+                  type="module"
+                  src="https://unpkg.com/@splinetool/viewer@1.9.90/build/spline-viewer.js"
+                  async
+                ></script>
+                <spline-viewer
+                  url="https://prod.spline.design/RbXC6hb1vdmdzizm/scene.splinecode"
+                  loading="lazy"
+                ></spline-viewer>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Features Section -->
+      <section class="features" id="features">
+        <div class="container">
+          <div class="section-header">
+            <h2>Smart Training Solutions</h2>
+            <p>
+              Our platform leverages cutting-edge technology to optimize every
+              aspect of your fitness journey
+            </p>
+          </div>
+          <div class="row g-4">
+            <div class="col-md-6 col-lg-4">
+              <div class="feature-card">
+                <div class="feature-icon">
+                  <i class="fas fa-brain"></i>
+                </div>
+                <h3>Adaptive Algorithms</h3>
+                <p>
+                  Our AI continuously analyzes your progress and adjusts your
+                  training plan to ensure optimal results without plateaus.
+                </p>
+              </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+              <div class="feature-card">
+                <div class="feature-icon">
+                  <i class="fas fa-video"></i>
+                </div>
+                <h3>Form Analysis</h3>
+                <p>
+                  Computer vision technology provides real-time feedback on your
+                  exercise form to maximize effectiveness and prevent injury.
+                </p>
+              </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+              <div class="feature-card">
+                <div class="feature-icon">
+                  <i class="fas fa-chart-line"></i>
+                </div>
+                <h3>Performance Tracking</h3>
+                <p>
+                  Detailed analytics track every aspect of your training, from
+                  strength gains to recovery metrics, all in one dashboard.
+                </p>
+              </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+              <div class="feature-card">
+                <div class="feature-icon">
+                  <i class="fas fa-dumbbell"></i>
+                </div>
+                <h3>Custom Workouts</h3>
+                <p>
+                  Receive personalized workout plans tailored to your goals,
+                  schedule, and available equipment.
+                </p>
+              </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+              <div class="feature-card">
+                <div class="feature-icon">
+                  <i class="fas fa-heartbeat"></i>
+                </div>
+                <h3>Recovery Optimization</h3>
+                <p>
+                  Smart algorithms analyze your biometrics to recommend optimal
+                  rest periods and recovery techniques.
+                </p>
+              </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+              <div class="feature-card">
+                <div class="feature-icon">
+                  <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h3>Anywhere Access</h3>
+                <p>
+                  Your complete training system is always with you, whether at
+                  home, in the gym, or traveling.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CV Feature Section -->
+      <section class="cv-feature" id="cv-feature">
+        <div class="container">
+          <div class="row align-items-center">
+            <div class="col-lg-5">
+              <div class="cv-highlight">
+                <h2>Advanced Ai Motion Tracking</h2>
+                <p class="lead">Real-time biomechanical analysis</p>
+                <p>
+                  Our proprietary computer vision system tracks 26 key points on
+                  your body to provide millimeter-accurate feedback on your
+                  exercise form. This technology helps you perform every
+                  movement with perfect technique for maximum results and
+                  minimal injury risk.
+                </p>
+                <ul>
+                  <li>3D joint angle measurement with 0.5° precision</li>
+                  <li>Real-time corrective feedback</li>
+                  <li>Repetition counting and tempo analysis</li>
+                  <li>Range of motion optimization</li>
+                  <li>Muscle activation tracking</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-7 p-0">
+              <div class="cv-image mt-3">
+                <script
+                  type="module"
+                  src="https://unpkg.com/@splinetool/viewer@1.9.90/build/spline-viewer.js"
+                  async
+                ></script>
+                <spline-viewer
+                  url="https://prod.spline.design/Sr0zWAidqhYvQUAM/scene.splinecode"
+                  ><img
+                    src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAANCAYAAADISGwcAAAG1ElEQVR4AQCBAH7/AG1pbwBuanAAcW1zAHNvdQB2cngAeHR6AHh0egB3c3kAdXF3AHBscgprZ20cZWFnMF9aYUJZVVtRVlFYW1RQVl9UUFZdV1NZVFxYXkViXWQyaGRqHm5qcApzb3UAd3N5AHh0egB4dHoAdnJ4AHNvdQBva3EAa2dtAGhkagBnY2kDAIEAfv8AcGxyAHFtcwBzb3UAdXF3AHh0egB6dnwAenZ8AHl1fAB3c3kEcm50FG1pbyZnY2k6YVxjTFtXXVtXU1pmVlJYalZSWGdZVVteXlpgT2RgZjxqZmwncGxyE3VxdwF5dXsAe3d9AHp2fAB5dHsAdXF3AHJudABuanAAa2dtBWpmbAgAgQB+/wB0cHYGdXF3BHdzeQF6dnwAfHh+AH56gAB+eoAAfXl/Bnt3fRJ2cngicWxzNWpmbElkYGZcX1tha1tXXXZZVVt6WlZcd1xYXm5hXWNfZ2NpS25qcDZ0cHYheXV7Dn15fwB/e4EAf3uBAH15fwB6dnwAdnJ4AHNvdQZwbHIMb2txDwCBAH7/AHl1exB6dnwOfHh+C397gQiBfYMFg3+FBoN/hQqCfoQSf3uBH3t3fTB1cXdDb2txWGhkamtjX2V7X1thhl1ZX4teWmCIYFxifmVhZ29rZ21bcm50RXh0ei9+eoAcgn6EDISAhgKEgIYAg3+FAIB8ggF8eH4HeXV7DXZyeBN1cXcWAIEAfv8AfnqAFX97gRSBfYMRhICGDoaCiAyIhIoNiISKEYeDiRqEgIYof3uBOnl1e05zb3VjbGhud2djaYhjX2WUYV1jmWFdY5ZkYGaNaWVrfW9rcWl2cnhTfHh+PIJ+hCiGgogXiYWLDImFiwaIhIoEhYGHB4J+hAx/e4ESfXh/F3t3fRoAgQB+/wCCfoQYhICGF4aCiBSIhIoRioaMEIyIjhGMiI4WioaMIIeDiS6CfoRBfHh+VnVxd21va3GCaWVrk2VhZ6BjX2WlY19lo2ZiaJprZ22LcW1zdnh0emB/e4FJhYGHM4qGjCKMiI4WjYmPDoyIjgyKhowOh4OJEoSAhheBfYMcgHyCHgCBAH7/AIWBhx6GgogciISKGoqGjBeMiI8WjoqQGI6KkB6MiI4oiYWLN4SAhkp9eX9hdnJ4eG9rcY5pZWygZWFnrWNfZbNjX2WyZmJoqWtnbZpxbXOGeHR6b397gVeGgohCi4aNMI6JkCKPi5EajoqQF4yIjhiJhYschoKIIISAhiWDf4UnAIEAfv8AhoKIK4eDiSmJhIsni4eNJI2JjyOOipAljoqQK4yIjjaIhIpFg3+FWXx4fnB1cXeHbmpwnmhkarFjX2W/YV1jxmFdY8VkYGa8aWVrrW9rcZl2cniCfnmAaoSAhlSJhYtCjIiONI6KkCuNiY8njIiOJ4mFiyqHgokuhICGMoN/hTQAgQB+/wCEgIY+hYGHPYeDiTqJhYs4i4eNN4yIjjmMiI4+ioaMSYaCiFmAfIJteXV7g3JudJtqZmyyZGBmxl9bYdRdWV/bXVlf2mBcYtJkYGbDa2dtrnJudJd5dXx/gHyCaYWBh1WJhYtHi4eNPYuGjTmJhYs5h4OJO4SAhj+CfoRCgX2DRACBAH7/AIJ+hFWDf4VUhICGUYaCiE6IhIpNiYWLTomFi1SGgohegn6Ebnx4foF1cXeYbWlvsGZiaMZfW2HaWlZc51hUWu5YVFruWlZc5V9bYdZlYWfBbWlvqnRwdpF7d316gHyDZ4SAhliGgohOhoKISYWBh0iDf4VKgX2DTX97gVB+eoBSAIEAfv8Af3uBaoB7gmiBfYNmg3+FYoWBh2GGgohihYGHZ4J+hXF+eoB/eHR6k3Ftc6lpZWvAYV1j1lpWXOlVUVf3Uk5U/VJOVPxVUVfzWVVb5GBcYs9nY2m3b2txnnZyeId7d31yf3uBY4F9g1iCfYRTgHyCUX56gFN8eH5WenZ8WXl1e1oAgQB+/wB8eH55fXl/d356gHSAfIJxgn6Eb4N/hW+CfoR0f3uBfXt3fYt1cXeebWlvs2VhZ8pdWV/gVlJY81FNU/9OSlD/TkpQ/1BMUvtVUVfrW1dd1mNfZb5qZmykcW1zjHdzeXh7d31ofXl/XX55gFd9eX9Ve3d9Vnl1e1l3c3lcdnJ4XQGBAH7/AHp2fIF7d31/fXl/e397gXiAfIJ1gX2DdoB8gnp9eX+DeXV7kXNvdaNrZ224Y19lz1tXXeRUUFb3T0tR/0xITv9LR03/TkpQ/lJOVO5ZVVvYYFxiwGhkaqZva3GOdXF3eXl1e2l7d31ee3d9V3p2fFZ5dXtXd3J5WXVxd1x0cHZd1W/FdbpIXNAAAAAASUVORK5CYII="
+                    alt="Spline preview"
+                    style="width: 100%; height: 100%"
+                /></spline-viewer>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- How It Works Section -->
+      <section class="how-it-works" id="how-it-works">
+        <div class="container">
+          <div class="section-header">
+            <h2>Your Personalized Fitness Journey</h2>
+            <p>Getting started with LIFTOLOGY is simple and straightforward</p>
+          </div>
+          <div class="row justify-content-center">
+            <div class="col-lg-8">
+              <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                  <h3>Initial Assessment</h3>
+                  <p>
+                    Complete our comprehensive fitness profile, including your
+                    goals, current fitness level, and any physical limitations.
+                    This helps our AI understand your starting point.
+                  </p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                  <h3>AI Analysis</h3>
+                  <p>
+                    Our algorithms process your data against thousands of
+                    successful training regimens to create your optimal workout
+                    plan, tailored to your unique physiology and goals.
+                  </p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                  <h3>Start Training</h3>
+                  <p>
+                    Receive your customized program with detailed instructions
+                    and video demonstrations. Our motion tracking provides
+                    real-time feedback as you train.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Diet Plan System Section -->
+      <section class="diet-plan" id="diet-plan">
+        <div class="container">
+          <div class="section-header">
+            <h2>Smart Nutrition Planning</h2>
+            <p>AI-powered meal planning that adapts to your goals and preferences</p>
+          </div>
+          <div class="row align-items-center">
+            <div class="col-lg-6">
+              <div class="diet-features">
+                <div class="diet-feature-item">
+                  <div class="feature-icon">
+                    <i class="fas fa-utensils"></i>
+                  </div>
+                  <div class="feature-content">
+                    <h3>Personalized Meal Plans</h3>
+                    <p>Get customized meal plans based on your dietary preferences, restrictions, and fitness goals.</p>
+                  </div>
+                </div>
+                <div class="diet-feature-item">
+                  <div class="feature-icon">
+                    <i class="fas fa-calculator"></i>
+                  </div>
+                  <div class="feature-content">
+                    <h3>Macro Tracking</h3>
+                    <p>Advanced algorithms calculate your optimal macronutrient ratios for maximum results.</p>
+                  </div>
+                </div>
+                <div class="diet-feature-item">
+                  <div class="feature-icon">
+                    <i class="fas fa-sync-alt"></i>
+                  </div>
+                  <div class="feature-content">
+                    <h3>Adaptive Adjustments</h3>
+                    <p>Your meal plan automatically adjusts based on your progress and feedback.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="diet-image">
+                <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.94/build/spline-viewer.js"></script>
+                <spline-viewer url="https://prod.spline.design/iIWZA80WRBYNlC-K/scene.splinecode"></spline-viewer>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Testimonials -->
+      <section class="testimonials" id="testimonials">
+        <div class="container">
+          <div class="section-header">
+            <h2>Proven Results</h2>
+            <p>
+              Hear from people who have transformed their fitness with LIFTOLOGY
+            </p>
+          </div>
+          <div class="row g-4">
+            <div class="col-lg-4">
+              <div class="testimonial-card">
+                <p>
+                  "After years of inconsistent results with traditional training
+                  methods, LIFTOLOGY helped me break through plateaus I didn't
+                  even know I had. The AI adjustments keep my workouts
+                  challenging but achievable."
+                </p>
+                <div class="testimonial-author">
+                  <div class="author-avatar">MM</div>
+                  <div class="author-info">
+                    <h4>Mohamed M.</h4>
+                    <p>Lost 28lbs in 12 weeks</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="testimonial-card">
+                <p>
+                  "The form correction feature completely changed my workouts. I
+                  was doing several exercises wrong for years, and fixing my
+                  technique eliminated my chronic back pain while improving my
+                  results."
+                </p>
+                <div class="testimonial-author">
+                  <div class="author-avatar">MA</div>
+                  <div class="author-info">
+                    <h4>Mostafa A.</h4>
+                    <p>Gained 8lbs of muscle</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="testimonial-card">
+                <p>
+                  "As a busy professional, I need efficient workouts. LIFTOLOGY
+                  optimizes my training time so effectively that I'm getting
+                  better results in 3 sessions per week than I used to get with
+                  5."
+                </p>
+                <div class="testimonial-author">
+                  <div class="author-avatar">AM</div>
+                  <div class="author-info">
+                    <h4>Abdelrahman M.</h4>
+                    <p>CEO, Tech Startup</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA Section -->
+      <section class="cta-section">
+        <div class="container">
+          <div class="cta-content">
+            <h2>Ready to Transform Your Fitness?</h2>
+            <p>
+              Join thousands of users who are achieving their goals with
+              LIFTOLOGY's AI-powered training system. Get your personalized plan
+              today.
+            </p>
+            <a href="form.html" class="cta-btn">Start Your Journey</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer" role="contentinfo">
+      <div class="container">
+        <div class="row g-4">
+          <div class="col-lg-4">
+            <div class="footer-about text-md-center text-lg-start">
+              <div class="footer-logo">LIFT<span>OLOGY</span></div>
+              <p>
+                Using cutting-edge AI to deliver personalized fitness
+                solutions that adapt as you progress. The future of training
+                is here.
+              </p>
+              <div
+                class="social-icons justify-content-md-center justify-content-lg-start"
+              >
+                <a href="#" class="social-icon"
+                  ><i class="fab fa-facebook-f"></i
+                ></a>
+                <a href="#" class="social-icon"
+                  ><i class="fab fa-x"></i
+                ></a>
+                <a href="#" class="social-icon"
+                  ><i class="fab fa-instagram"></i
+                ></a>
+                <a href="#" class="social-icon"
+                  ><i class="fab fa-youtube"></i
+                ></a>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4 col-lg-2">
+            <div class="footer-links">
+              <h3>Product</h3>
+              <ul>
+                <li><a href="#">Features</a></li>
+                <li><a href="#">Technology</a></li>
+                <li><a href="#">Pricing</a></li>
+                <li><a href="#">FAQ</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-sm-4 col-lg-3">
+            <div class="footer-links">
+              <h3>Company</h3>
+              <ul>
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Careers</a></li>
+                <li><a href="#">Blog</a></li>
+                <li><a href="#">Contact</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-sm-4 col-lg-3">
+            <div class="footer-links">
+              <h3>Legal</h3>
+              <ul>
+                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="#">Terms of Service</a></li>
+                <li><a href="#">Cookie Policy</a></li>
+                <li><a href="#">GDPR</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>
+            &copy; 2025
+            <span style="color: white; word-spacing: -4px; font-weight: bold">
+              LIFT <span style="color: var(--primary)">OLOGY</span> </span
+            >. All rights reserved. | AI-Powered Fitness Solutions
+          </p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Mobile Theme Toggle Button -->
+    <button class="theme-toggle-mobile" id="themeToggleMobile" aria-label="Toggle dark mode">
+      <i class="fas fa-moon" aria-hidden="true"></i>
+    </button>
+
+    <!-- Chatbot Button and Container -->
+    <div class="chatbot-container">
+      <button class="chatbot-toggle" id="chatbotToggle" aria-label="Open chat">
+        <i class="fas fa-comments" aria-hidden="true"></i>
+      </button>
+      <div class="chatbot-window" id="chatbotWindow" role="dialog" aria-label="Chat with Helix">
+        <div class="chatbot-header">
+          <h5>Chat with Helix</h5>
+          <button class="close-chatbot" id="closeChatbot" aria-label="Close chat">
+            <i class="fas fa-times" aria-hidden="true"></i>
+          </button>
+        </div>
+        <div class="chatbot-messages" id="chatbotMessages" role="log" aria-live="polite">
+          <div class="message bot">Hello! How can I help you today?</div>
+        </div>
+        <div class="chatbot-input">
+          <input
+            type="text"
+            id="chatbotInput"
+            placeholder="Type your message..."
+            aria-label="Chat message"
+          />
+          <button id="sendMessage" aria-label="Send message">
+            <i class="fas fa-paper-plane" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Optimized JavaScript -->
+    <script>
+      // Constants
+      const API_URL = 'https://liftologybackend-production.up.railway.app';
+      const THEME_KEY = 'theme';
+      const USER_KEY = 'currentUser';
+
+      // DOM Elements
+      const elements = {
+        navbar: document.querySelector('.navbar'),
+        themeToggle: document.getElementById('themeToggle'),
+        themeToggleMobile: document.getElementById('themeToggleMobile'),
+        chatbotToggle: document.getElementById('chatbotToggle'),
+        chatbotWindow: document.getElementById('chatbotWindow'),
+        closeChatbot: document.getElementById('closeChatbot'),
+        sendMessage: document.getElementById('sendMessage'),
+        chatbotInput: document.getElementById('chatbotInput'),
+        chatbotMessages: document.getElementById('chatbotMessages'),
+        userNav: document.getElementById('userNav'),
+        logout: document.querySelector('.logout')
+      };
+
+      // State Management
+      const state = {
+        currentUser: JSON.parse(localStorage.getItem(USER_KEY)),
+        prefersDarkScheme: window.matchMedia('(prefers-color-scheme: dark)'),
+        currentTheme: localStorage.getItem(THEME_KEY) || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+      };
+
+      // Theme Management
+      const themeManager = {
+        init() {
+          this.applyTheme(state.currentTheme);
+          this.setupEventListeners();
+        },
+
+        applyTheme(theme) {
+          if (theme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            elements.themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+          } else {
+            document.documentElement.removeAttribute('data-theme');
+            elements.themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+          }
+          elements.themeToggleMobile.innerHTML = elements.themeToggle.innerHTML;
+        },
+
+        toggleTheme() {
+          const newTheme = document.documentElement.getAttribute('data-theme') ? 'light' : 'dark';
+          this.applyTheme(newTheme);
+          localStorage.setItem(THEME_KEY, newTheme);
+        },
+
+        setupEventListeners() {
+          elements.themeToggle.addEventListener('click', () => this.toggleTheme());
+          elements.themeToggleMobile.addEventListener('click', () => this.toggleTheme());
+          state.prefersDarkScheme.addEventListener('change', (e) => {
+            if (!localStorage.getItem(THEME_KEY)) {
+              this.applyTheme(e.matches ? 'dark' : 'light');
+            }
+          });
+        }
+      };
+
+      // Chatbot Management
+      const chatbotManager = {
+        init() {
+          this.setupEventListeners();
+        },
+
+        setupEventListeners() {
+          elements.chatbotToggle.addEventListener('click', () => this.toggleChatbot());
+          elements.closeChatbot.addEventListener('click', () => this.closeChatbot());
+          elements.sendMessage.addEventListener('click', () => this.handleUserMessage());
+          elements.chatbotInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') this.handleUserMessage();
+          });
+        },
+
+        toggleChatbot() {
+          elements.chatbotWindow.style.display = 'flex';
+          elements.chatbotToggle.style.display = 'none';
+        },
+
+        async closeChatbot() {
+          if (state.currentUser?.user_info?.email) {
+            try {
+              await fetch(`${API_URL}/chat/${state.currentUser.user_info.email}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_input: 'exit' })
+              });
+            } catch (error) {
+              console.error('Error sending exit message:', error);
+            }
+          }
+          elements.chatbotMessages.innerHTML = '<div class="message bot">Hello! How can I help you today?</div>';
+          elements.chatbotWindow.style.display = 'none';
+          elements.chatbotToggle.style.display = 'flex';
+        },
+
+        addMessage(message, isUser = false) {
+          const messageDiv = document.createElement('div');
+          messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
+          messageDiv.textContent = message;
+          elements.chatbotMessages.appendChild(messageDiv);
+          elements.chatbotMessages.scrollTop = elements.chatbotMessages.scrollHeight;
+        },
+
+        showTypingIndicator() {
+          const typingDiv = document.createElement('div');
+          typingDiv.className = 'typing-indicator';
+          typingDiv.innerHTML = '<span></span><span></span><span></span>';
+          elements.chatbotMessages.appendChild(typingDiv);
+          elements.chatbotMessages.scrollTop = elements.chatbotMessages.scrollHeight;
+          return typingDiv;
+        },
+
+        async handleUserMessage() {
+          const message = elements.chatbotInput.value.trim();
+          if (!message) return;
+
+          this.addMessage(message, true);
+          elements.chatbotInput.value = '';
+
+          if (!state.currentUser?.user_info?.email) {
+            this.addMessage('Please sign in to use the chatbot.');
+            return;
+          }
+
+          if (message.length > 500) {
+            this.addMessage('Your message is too long. Please keep it under 500 characters.');
+            return;
+          }
+
+          const typingIndicator = this.showTypingIndicator();
+
+          try {
+            const response = await fetch(`${API_URL}/chat/${state.currentUser.user_info.email}`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ user_input: message })
+            });
+
+            const responseText = await response.text();
+            
+            if (!response.ok) {
+              if (responseText.includes('tokens per minute') || responseText.includes('rate_limit_exceeded')) {
+                throw new Error('TOKEN_LIMIT');
+              }
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = JSON.parse(responseText);
+            typingIndicator.remove();
+            
+            if (data?.response) {
+              this.addMessage(data.response);
+            } else if (data?.bot_response) {
+              this.addMessage(data.bot_response);
+            } else {
+              throw new Error('Invalid response format');
+            }
+          } catch (error) {
+            typingIndicator.remove();
+            console.error('Chat error:', error);
+            
+            if (error.message === 'TOKEN_LIMIT') {
+              this.addMessage("I'm currently processing too many requests. Please wait a moment and try again with a shorter message.");
+            } else {
+              this.addMessage("Sorry, I'm having trouble connecting right now. Please try again later.");
+            }
+          }
+        }
+      };
+
+      // User Management
+      const userManager = {
+        init() {
+          this.updateNavigation();
+          this.setupEventListeners();
+        },
+
+        updateNavigation() {
+          elements.logout.style.display = 'none';
+
+          if (state.currentUser?.exercise_plan) {
+            elements.userNav.innerHTML = this.createUserNavHTML(state.currentUser);
+            elements.logout.style.display = 'block';
+          } else if (state.currentUser) {
+            elements.userNav.innerHTML = '<a class="nav-link nav-cta" href="form.html">Get Your Plan</a>';
+            elements.logout.style.display = 'block';
+          } else {
+            elements.userNav.innerHTML = '<a class="nav-link nav-cta" href="signin-signup.html">Sign Up Now</a>';
+          }
+        },
+
+        createUserNavHTML(user) {
+          return `
+            <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
+              <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                  <a class="nav-link nav-cta dropdown-toggle" style="margin-inline: auto;" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Hello, ${user.user_info["first name"]}
+                  </a>
+                  <ul class="dropdown-menu dropdown-menu overflow-hidden" style="left:50%;transform:translate(-50%,10px);border-radius: 10%;background-color:var(--bg-primary);" aria-labelledby="navbarDarkDropdownMenuLink">
+                    <li><a class="dropdown-item nav-link" href="plan.html">My Exercise Plan</a></li>
+                    <li><a class="dropdown-item nav-link" href="diet.html">My Diet Plan</a></li>
+                    <li><a class="dropdown-item nav-link" href="dashboard.html">Dashboard</a></li>
+                    <li><a class="dropdown-item nav-link" onclick="userManager.logout()" href="#">Log Out</a></li>
+                  </ul>
+                </li>
+              </ul>
+            </div>`;
+        },
+
+        logout() {
+          localStorage.removeItem(USER_KEY);
+          window.location.href = 'index.html';
+        },
+
+        setupEventListeners() {
+          // Close navbar menu when clicking outside
+          document.addEventListener('click', (event) => {
+            const navbar = document.getElementById('navbarNav');
+            const navbarToggler = document.querySelector('.navbar-toggler');
+            
+            if (navbar.classList.contains('show') && 
+                !navbar.contains(event.target) && 
+                !navbarToggler.contains(event.target)) {
+              navbarToggler.click();
+            }
+          });
+
+          // Navbar scroll effect
+          window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+              elements.navbar.classList.add('scrolled');
+            } else {
+              elements.navbar.classList.remove('scrolled');
+            }
+          });
+        }
+      };
+
+      // Initialize all managers
+      document.addEventListener('DOMContentLoaded', () => {
+        themeManager.init();
+        chatbotManager.init();
+        userManager.init();
+      });
+    </script>
+  </body>
+</html>

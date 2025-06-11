@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interactive Diet Plan</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto+Condensed:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="icon" type="image/x-icon" href="images/weightlifter.png" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Roboto+Condensed:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Add SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css">
+    <style>
+      :root {
+        /* Light theme */
+        --primary: #e60026; /* Bold red */
+        --primary-dark: #b3001d;
+        --primary-light: #ff1a1a;
+        --text-primary: #111111;  /* Very dark gray */
+        --text-secondary: #444444;
+        --bg-primary: #ffffff; /* Pure white */
+        --bg-secondary: #f8f9fa;
+        --bg-tertiary: #e9ecef;
+        --card-bg: #ffffff;
+        --border-color: #dee2e6;
+        --success: #28a745;
+        --warning: #ffc107;
+        --darker: #000000;
+        --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+        --shadow-md: 0 4px 6px rgba(0,0,0,0.07);
+        --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+        --radius-sm: 8px;
+        --radius-md: 12px;
+        --radius-lg: 16px;
+        --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      }
+
+      [data-theme="dark"] {
+        /* Dark theme */
+        --primary: #ff0033; /* Vivid red for high contrast */
+        --primary-dark: #cc0029;
+        --primary-light: #ff1a1a;
+        --text-primary: #ffffff; /* Pure white text */
+        --text-secondary: #cccccc;
+        --bg-primary: #121212;  /* Deep black background */
+        --bg-secondary: #1e1e1e;
+        --bg-tertiary: #2d2d2d;
+        --card-bg: #1e1e1e;
+        --border-color: #333333;
+        --darker: #000000;
+        --shadow-sm: 0 2px 4px rgba(0,0,0,0.2);
+        --shadow-md: 0 4px 6px rgba(0,0,0,0.25);
+        --shadow-lg: 0 10px 15px rgba(0,0,0,0.3);
+        --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      }
+
+      /* SweetAlert2 Custom Styles */
+      .swal2-popup {
+        border-radius: var(--radius-lg) !important;
+        box-shadow: var(--shadow-lg) !important;
+        border: 1px solid var(--border-color) !important;
+      }
+
+      .swal2-title {
+        color: var(--text-primary) !important;
+        font-family: "Montserrat", sans-serif !important;
+        font-weight: 600 !important;
+      }
+
+      .swal2-content {
+        color: var(--text-secondary) !important;
+        font-family: "Montserrat", sans-serif !important;
+      }
+
+      .swal2-confirm {
+        background-color: var(--primary) !important;
+        border-radius: var(--radius-md) !important;
+        font-family: "Montserrat", sans-serif !important;
+        font-weight: 500 !important;
+        box-shadow: var(--shadow-sm) !important;
+        transition: all 0.3s ease !important;
+      }
+
+      .swal2-confirm:hover {
+        background-color: var(--primary-dark) !important;
+        transform: translateY(-2px) !important;
+        box-shadow: var(--shadow-md) !important;
+      }
+
+      .swal2-timer-progress-bar {
+        background: var(--primary) !important;
+      }
+
+      /* Success icon color */
+      .swal2-icon.swal2-success {
+        border-color: var(--primary) !important;
+      }
+
+      .swal2-icon.swal2-success [class^='swal2-success-line'] {
+        background-color: var(--primary) !important;
+      }
+
+      .swal2-icon.swal2-success .swal2-success-ring {
+        border-color: var(--primary) !important;
+      }
+
+      /* Error icon color */
+      .swal2-icon.swal2-error {
+        border-color: var(--primary) !important;
+      }
+
+      .swal2-icon.swal2-error [class^='swal2-x-mark-line'] {
+        background-color: var(--primary) !important;
+      }
+
+      body {
+        font-family: "Montserrat", sans-serif;
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+        line-height: 1.6;
+        min-height: 100vh;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+
+      .container {
+        max-width: 1200px;
+        padding: 2rem 1rem;
+      }
+
+      /* Header Styles */
+      .plan-header {
+        background: linear-gradient(135deg, rgba(230, 0, 38, 0.05) 0%, var(--card-bg) 100%);
+        border-radius: var(--radius-lg);
+        padding: 2rem;
+        margin-bottom: 3rem;
+        box-shadow: var(--shadow-lg);
+        border: 1px solid var(--border-color);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .plan-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+      }
+
+      .plan-header h4 {
+        font-family: "Roboto Condensed", sans-serif;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.75rem;
+        color: var(--text-primary);
+        font-size: 1.75rem;
+      }
+
+      /* Meal Card Styles */
+      .meal-card {
+        background-color: var(--card-bg);
+        color: var(--text-primary);
+        border: 1px solid var(--border-color);
+        padding: 2rem;
+        border-radius: var(--radius-lg);
+        margin-bottom: 2.5rem;
+        box-shadow: var(--shadow-md);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .meal-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-lg);
+        border-color: var(--primary);
+      }
+
+      .meal-card h5 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        color: var(--primary);
+        position: relative;
+        display: inline-block;
+        padding-bottom: 0.5rem;
+      }
+
+      .meal-card h5::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 60px;
+        height: 3px;
+        background-color: var(--primary);
+        border-radius: 3px;
+      }
+
+      .meal-time {
+        font-size: 1.1rem;
+        color: var(--text-secondary);
+        margin-bottom: 2rem;
+        font-weight: 500;
+      }
+
+      /* Food Item Styles */
+      .food-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+      }
+
+      .food-item {
+        background-color: var(--bg-secondary);
+        color: var(--text-primary);
+        border: 1px solid var(--border-color);
+        padding: 2rem;
+        border-radius: var(--radius-md);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        box-shadow: var(--shadow-sm);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .food-item::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .food-item:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-md);
+        border-color: var(--primary);
+        background-color: var(--bg-tertiary);
+      }
+
+      .food-item:hover::before {
+        opacity: 1;
+      }
+
+      .food-item strong {
+        display: block;
+        color: var(--text-primary);
+        font-weight: 600;
+        margin-bottom: 1.25rem;
+        font-size: 1.35rem;
+      }
+
+      .food-item .food-meta {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.25rem;
+        flex-wrap: wrap;
+      }
+
+      .food-item .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.95rem;
+        color: var(--text-secondary);
+        background-color: var(--bg-primary);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      .food-item:hover .meta-item {
+        background-color: var(--card-bg);
+        color: var(--text-primary);
+      }
+
+      .food-item .meta-item i {
+        color: var(--primary);
+        font-size: 1rem;
+      }
+
+      .food-item .view-details {
+        color: var(--primary);
+        font-size: 1rem;
+        margin-top: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 600;
+        transition: color 0.3s ease;
+      }
+
+      .food-item:hover .view-details {
+        color: var(--primary-dark);
+      }
+
+      /* Card Styles */
+      .card {
+        background-color: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-lg);
+        transition: all 0.3s ease;
+        box-shadow: var(--shadow-md);
+        overflow: hidden;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-lg);
+        border-color: var(--primary);
+      }
+
+      .card-body {
+        padding: 1.75rem;
+        background-color: var(--card-bg);
+      }
+
+      .card h6 {
+        color: var(--primary);
+        font-weight: 600;
+        margin-bottom: 1rem;
+      }
+
+      .card p,
+      .card small {
+        margin-bottom: 0.5rem;
+        color: var(--text-primary);
+      }
+
+      .card .text-primary {
+        color: var(--primary) !important;
+      }
+
+      .card .bg-light {
+        background-color: var(--bg-secondary) !important;
+      }
+
+      .card .border-primary {
+        border-color: var(--primary) !important;
+      }
+
+      /* Nutrition Modal Styles */
+      .nutrition-modal .modal-content {
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        border: none;
+        box-shadow: var(--shadow-lg);
+      }
+
+      .nutrition-modal .modal-header {
+        background-color: var(--bg-primary);
+        border-bottom: 1px solid var(--border-color);
+        padding: 1.5rem;
+      }
+
+      .nutrition-modal .modal-body {
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+        padding: 2rem;
+      }
+
+      .nutrition-modal .modal-footer {
+        background-color: var(--bg-primary);
+        border-top: 1px solid var(--border-color);
+        padding: 1.5rem;
+      }
+
+      [data-theme="dark"] .btn-close {
+        filter: invert(1) grayscale(100%) brightness(200%);
+      }
+
+      .nutrition-modal .modal-title {
+        color: var(--primary);
+        font-weight: 600;
+        font-size: 1.5rem;
+      }
+
+      .nutrition-info {
+        background: var(--bg-secondary);
+        padding: 2rem;
+        border-radius: var(--radius-md);
+        margin-bottom: 2rem;
+        border-left: 4px solid var(--primary);
+        box-shadow: var(--shadow-sm);
+        transition: all 0.3s ease;
+      }
+
+      .nutrition-info:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+      }
+
+      .nutrition-info h5 {
+        color: var(--primary);
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 1.35rem;
+        font-weight: 600;
+      }
+
+      .nutrition-info h5 i {
+        font-size: 1.25rem;
+        background: rgba(230, 0, 38, 0.1);
+        padding: 0.75rem;
+        border-radius: 50%;
+        color: var(--primary);
+      }
+
+      .nutrition-values {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 1.5rem;
+      }
+
+      .nutrition-value {
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        padding: 0.75rem 1.25rem;
+        border-radius: 20px;
+        font-size: 0.95rem;
+        font-weight: 500;
+        border: 1px solid var(--border-color);
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex: 1;
+        min-width: 150px;
+        justify-content: center;
+      }
+
+      .nutrition-value:hover {
+        background: var(--primary);
+        color: white;
+        transform: translateY(-2px);
+        border-color: var(--primary);
+      }
+
+      .nutrition-value i {
+        font-size: 1rem;
+      }
+
+      .list-group-item {
+        color: var(--text-primary);
+        border-color: var(--border-color);
+        padding: 1rem 1.25rem;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .list-group-item:hover {
+        background-color: var(--bg-tertiary);
+        transform: translateX(5px);
+      }
+
+      .list-group-item i {
+        color: var(--primary);
+        font-size: 1rem;
+      }
+
+      .list-group-item::before {
+        content: '';
+        width: 6px;
+        height: 6px;
+        background-color: var(--primary);
+        border-radius: 50%;
+        opacity: 0.5;
+      }
+
+      .list-group-item:hover::before {
+        opacity: 1;
+      }
+
+      .recipe-instructions {
+        counter-reset: instruction-counter;
+      }
+
+      .recipe-instructions .list-group-item {
+        counter-increment: instruction-counter;
+        padding-left: 3rem;
+        position: relative;
+      }
+
+      .recipe-instructions .list-group-item::before {
+        content: counter(instruction-counter);
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 24px;
+        height: 24px;
+        background-color: var(--primary);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.85rem;
+        font-weight: 600;
+        opacity: 1;
+      }
+
+      .recipe-instructions .list-group-item:hover::before {
+        transform: translateY(-50%) scale(1.1);
+      }
+
+      @media (max-width: 768px) {
+        .nutrition-value {
+          min-width: 100%;
+        }
+
+        .nutrition-info {
+          padding: 1.5rem;
+        }
+
+        .list-group-item {
+          padding: 0.75rem 1rem;
+        }
+
+        .recipe-instructions .list-group-item {
+          padding-left: 2.5rem;
+        }
+      }
+
+      /* Theme Toggle */
+      .theme-toggle {
+        background: var(--bg-secondary);
+        border: none;
+        color: var(--text-primary);
+        cursor: pointer;
+        font-size: 1.25rem;
+        padding: 0.75rem;
+        border-radius: 50%;
+        width: 45px;
+        height: 45px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        box-shadow: var(--shadow-sm);
+      }
+
+      .theme-toggle:hover {
+        background-color: var(--primary);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+      }
+
+      /* Back Link */
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        padding: 0.75rem 1.5rem;
+        border-radius: 30px;
+        transition: all 0.3s ease;
+        color: var(--primary);
+        background-color: var(--card-bg);
+        border: 2px solid var(--primary);
+        box-shadow: var(--shadow-sm);
+      }
+
+      .back-link:hover {
+        background-color: var(--primary);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+      }
+
+      /* Responsive Adjustments */
+      @media (max-width: 768px) {
+        .container {
+          padding: 1rem;
+        }
+
+        .plan-header {
+          padding: 1.5rem;
+          margin-bottom: 2rem;
+        }
+
+        .plan-header h4 {
+          font-size: 1.5rem;
+        }
+
+        .meal-card {
+          padding: 1.5rem;
+        }
+
+        .food-list {
+          grid-template-columns: 1fr;
+        }
+
+        .nutrition-modal .modal-body {
+          padding: 1.5rem;
+        }
+
+        .nutrition-info {
+          padding: 1.5rem;
+        }
+
+        .theme-toggle {
+          position: fixed;
+          bottom: 20px;
+          right: 20px;
+          background-color: var(--primary);
+          color: white;
+          box-shadow: var(--shadow-md);
+          z-index: 1000;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container py-5">
+      <div class="plan-header d-flex justify-content-between align-items-center flex-wrap">
+        <div>
+          <h4>YOUR PERSONALIZED DIET PLAN</h4>
+          <p class="mb-0">Designed specifically for your nutritional needs</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <a href="index.html" class="back-link mt-3 mt-md-0"> Home </a>
+          <a href="dashboard.html" class="back-link mt-3 mt-md-0"> Dashboard </a>
+          <a href="plan.html" class="back-link mt-3 mt-md-0"> Exercise Plan </a>
+          <button class="theme-toggle" id="themeToggle">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+      </div>
+
+      <div id="output" class="fade-in"></div>
+    </div>
+
+    <!-- Nutrition Info Modal -->
+    <div class="modal fade nutrition-modal" id="nutritionModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="nutritionModalTitle">Nutrition Information</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div id="nutritionContent">
+              <div class="text-center py-5">
+                <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem">
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-3">Loading nutrition details...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", async () => {
+        // Get diet plan data from localStorage
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        
+        if (!currentUser) {
+          document.getElementById("output").innerHTML = `
+            <div class="alert alert-danger" role="alert">
+              <i class="fas fa-exclamation-circle me-2"></i>
+              Please sign in to view your diet plan.
+              <a href="signin-signup.html" class="alert-link">Sign in here</a>
+            </div>
+          `;
+          return;
+        }
+
+        const dietPlan = currentUser?.diet_plan?.output;
+
+        if (!dietPlan) {
+          document.getElementById("output").innerHTML = `
+            <div class="alert alert-warning" role="alert">
+              <i class="fas fa-exclamation-triangle me-2"></i>
+              No diet plan found. Please complete the diet plan questionnaire first.
+              <a href="diet_form.html" class="alert-link">Create diet plan</a>
+            </div>
+          `;
+          return;
+        }
+
+        if (!Array.isArray(dietPlan)) {
+          console.error('Diet plan data:', dietPlan);
+          document.getElementById("output").innerHTML = `
+            <div class="alert alert-danger" role="alert">
+              <i class="fas fa-exclamation-circle me-2"></i>
+              Invalid diet plan data format. Please try generating your plan again.
+              <a href="diet_form.html" class="alert-link">Regenerate plan</a>
+            </div>
+          `;
+          return;
+        }
+
+        if (dietPlan.length === 0) {
+          document.getElementById("output").innerHTML = `
+            <div class="alert alert-warning" role="alert">
+              <i class="fas fa-exclamation-triangle me-2"></i>
+              No recipes found in your diet plan. Please try generating your plan again.
+              <a href="diet_form.html" class="alert-link">Regenerate plan</a>
+            </div>
+          `;
+          return;
+        }
+
+        // Display user summary
+        document.getElementById("output").innerHTML += `
+          <div class="card bg-light border-danger mb-4">
+            <div class="card-body">
+              <div class="row" style="text-transform: capitalize;">
+                <div class="col-md-4">
+                  <h6 class="text-danger"><i class="fas fa-user me-2"></i> User</h6>
+                  <p class="mb-2">${currentUser.user_info['first name'] || 'User'}</p>
+                </div>
+                <div class="col-md-4">
+                  <h6 class="text-danger"><i class="fas fa-bullseye me-2"></i> Goal</h6>
+                  <p class="mb-2">${currentUser.exercise_plan.input['fitnessGoal'].replace('_', ' ').replace('gain', 'gain weight') || 'Not specified'}</p>
+                </div>
+                <div class="col-md-4">
+                  <h6 class="text-danger"><i class="fa-solid fa-weight-scale"></i> Current Weight</h6>
+                  <p class="mb-2">${currentUser.exercise_plan.input['weight'] || 'Not specified'}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+
+        // Generate meal plans
+        document.getElementById("output").innerHTML += `
+          <div class="meal-card">
+            <h5>Your Meal Plan</h5>
+            <div class="meal-time">Personalized recipes for your nutritional needs</div>
+            <div class="food-list">
+              ${dietPlan.map((recipe, index) => `
+                <div class="food-item" onclick="showNutritionDetails('${recipe.Name}')">
+                  <strong>${recipe.Name}</strong>
+                  <div class="food-meta">
+                    <span class="meta-item">
+                      <i class="fas fa-clock"></i> Prep: ${recipe.PrepTime}min, Cook: ${recipe.CookTime}min
+                    </span>
+                    <span class="meta-item">
+                      <i class="fas fa-fire"></i> ${Math.round(recipe.Calories)} calories
+                    </span>
+                    <span class="meta-item">
+                      <i class="fas fa-chart-pie"></i> P: ${Math.round(recipe.ProteinContent)}g, C: ${Math.round(recipe.CarbohydrateContent)}g, F: ${Math.round(recipe.FatContent)}g
+                    </span>
+                  </div>
+                  <div class="view-details">
+                    <i class="fas fa-info-circle"></i> View recipe details
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      });
+
+      // Nutrition Modal Functions
+      const nutritionModal = new bootstrap.Modal(document.getElementById("nutritionModal"));
+
+      function showNutritionDetails(recipeName) {
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        const dietPlan = currentUser?.diet_plan?.output;
+        const recipe = dietPlan.find(r => r.Name === recipeName);
+
+        if (!recipe) return;
+
+        document.getElementById("nutritionModalTitle").textContent = recipe.Name;
+        document.getElementById("nutritionContent").innerHTML = `
+          <div class="row g-4">
+            <div class="col-lg-5">
+              <div class="nutrition-info mb-4">
+                <h5><i class="fas fa-clock"></i> Time Information</h5>
+                <div class="nutrition-values">
+                  <span class="nutrition-value">
+                    <i class="fas fa-hourglass-start"></i> Prep: ${recipe.PrepTime}min
+                  </span>
+                  <span class="nutrition-value">
+                    <i class="fas fa-fire"></i> Cook: ${recipe.CookTime}min
+                  </span>
+                  <span class="nutrition-value">
+                    <i class="fas fa-clock"></i> Total: ${recipe.TotalTime}min
+                  </span>
+                </div>
+              </div>
+              <div class="nutrition-info">
+                <h5><i class="fas fa-chart-pie"></i> Nutrition Information</h5>
+                <div class="nutrition-values">
+                  <span class="nutrition-value">
+                    <i class="fas fa-fire"></i> Calories: ${Math.round(recipe.Calories)}
+                  </span>
+                  <span class="nutrition-value">
+                    <i class="fas fa-drumstick-bite"></i> Protein: ${Math.round(recipe.ProteinContent)}g
+                  </span>
+                  <span class="nutrition-value">
+                    <i class="fas fa-bread-slice"></i> Carbs: ${Math.round(recipe.CarbohydrateContent)}g
+                  </span>
+                  <span class="nutrition-value">
+                    <i class="fas fa-cheese"></i> Fat: ${Math.round(recipe.FatContent)}g
+                  </span>
+                  <span class="nutrition-value">
+                    <i class="fas fa-wheat"></i> Fiber: ${Math.round(recipe.FiberContent)}g
+                  </span>
+                  <span class="nutrition-value">
+                    <i class="fas fa-candy-cane"></i> Sugar: ${Math.round(recipe.SugarContent)}g
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-7">
+              <div class="nutrition-info mb-4">
+                <h5><i class="fas fa-list"></i> Ingredients</h5>
+                <ul class="list-group list-group-flush">
+                  ${recipe.RecipeIngredientParts.map(ingredient => 
+                    `<li class="list-group-item bg-transparent">
+                      <i class="fas fa-circle-check"></i>
+                      ${ingredient}
+                    </li>`
+                  ).join('')}
+                </ul>
+              </div>
+              <div class="nutrition-info">
+                <h5><i class="fas fa-tasks"></i> Instructions</h5>
+                <ol class="list-group list-group-flush recipe-instructions">
+                  ${recipe.RecipeInstructions.map(instruction => 
+                    `<li class="list-group-item bg-transparent">
+                      ${instruction}
+                    </li>`
+                  ).join('')}
+                </ol>
+              </div>
+            </div>
+          </div>
+        `;
+        nutritionModal.show();
+      }
+
+      // Theme Toggle
+      const themeToggle = document.getElementById("themeToggle");
+      const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+
+      const currentTheme = localStorage.getItem("theme") || (prefersDarkScheme.matches ? "dark" : "light");
+
+      if (currentTheme === "dark") {
+        document.documentElement.setAttribute("data-theme", "dark");
+        themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+      } else {
+        document.documentElement.removeAttribute("data-theme");
+        themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+      }
+
+      themeToggle.addEventListener("click", () => {
+        let theme;
+        if (document.documentElement.getAttribute("data-theme")) {
+          document.documentElement.removeAttribute("data-theme");
+          theme = "light";
+          themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+        } else {
+          document.documentElement.setAttribute("data-theme", "dark");
+          theme = "dark";
+          themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        }
+        localStorage.setItem("theme", theme);
+      });
+
+      prefersDarkScheme.addEventListener("change", (e) => {
+        if (!localStorage.getItem("theme")) {
+          if (e.matches) {
+            document.documentElement.setAttribute("data-theme", "dark");
+            themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+          } else {
+            document.documentElement.removeAttribute("data-theme");
+            themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+          }
+        }
+      });
+
+      // Make functions available globally
+      window.showNutritionDetails = showNutritionDetails;
+    </script>
+  </body>
+</html>

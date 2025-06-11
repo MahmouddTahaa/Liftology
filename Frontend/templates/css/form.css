@@ -1,0 +1,499 @@
+:root {
+  /* Light theme */
+  --primary: #e60026; /* Bold red */
+  --primary-dark: #b3001d;
+  --text-primary: #111111; /* Very dark gray */
+  --text-secondary: #444444;
+  --bg-primary: #ffffff; /* Pure white */
+  --bg-secondary: #f0f0f0;
+  --bg-tertiary: #e5e5e5;
+  --card-bg: #ffffff;
+  --border-color: #d0d0d0;
+  --success: #007f5f;
+  --warning: #ff6f00;
+  --darker: #000000;
+}
+
+[data-theme="dark"] {
+  /* Dark theme */
+  --primary: #ff0033; /* Vivid red for high contrast */
+  --primary-dark: #cc0029;
+  --text-primary: #ffffff; /* Pure white text */
+  --text-secondary: #cccccc;
+  --bg-primary: #0a0a0a; /* Deep black background */
+  --bg-secondary: #1a1a1a;
+  --bg-tertiary: #2a2a2a;
+  --card-bg: #1a1a1a;
+  --border-color: #333333;
+  --darker: #000000;
+}
+
+body {
+  font-family: "Montserrat", sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Roboto Condensed", sans-serif;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* Navigation */
+.navbar {
+  background-color: var(--bg-primary) !important;
+  box-shadow: 0 2px 10px rgba(220, 53, 69, 0.1);
+  padding: 20px 0;
+  transition: all 0.3s ease;
+}
+
+.navbar.scrolled {
+  padding: 15px 0;
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.15);
+}
+
+.navbar-brand {
+  font-weight: 700;
+  font-size: 1.8rem;
+  color: var(--text-primary);
+  letter-spacing: -0.5px;
+}
+
+.navbar-brand:hover {
+  color: var(--text-primary);
+}
+
+.navbar-brand span {
+  color: var(--primary);
+}
+
+.nav-link {
+  color: var(--text-primary) !important;
+  font-weight: 500;
+  padding: 8px 15px !important;
+  margin: 0 5px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+  color: var(--primary) !important;
+}
+
+.nav-link.active {
+  color: var(--primary) !important;
+}
+
+.nav-cta {
+  background-color: var(--primary);
+  color: var(--bg-primary) !important;
+  padding: 10px 25px !important;
+  border-radius: 30px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  margin-left: 15px;
+}
+
+.nav-cta:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+  color: var(--bg-primary) !important;
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 1.25rem;
+  padding: 0.5rem;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  margin-left: 15px;
+}
+
+.theme-toggle:hover {
+  background-color: var(--bg-secondary);
+}
+
+/* Form Section */
+.form-section {
+  padding: 120px 0;
+  background-color: var(--bg-primary);
+}
+
+.form-card {
+  background-color: var(--card-bg);
+  border-radius: 12px;
+  padding: 40px;
+  box-shadow: 0 20px 40px rgba(220, 53, 69, 0.1);
+  border: none;
+  max-width: 800px;
+  margin: 0 auto;
+  transition: all 0.3s ease;
+}
+
+.form-title {
+  font-size: 2.5rem;
+  margin-bottom: 30px;
+  text-align: center;
+  color: var(--text-primary);
+}
+
+.form-title span {
+  color: var(--primary);
+}
+
+.form-floating {
+  margin-bottom: 1.5rem;
+}
+
+.form-control,
+.form-select {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border: none;
+  height: 60px;
+  padding: 0 20px;
+  transition: all 0.2s ease;
+  border-radius: 12px;
+}
+
+.form-control:focus,
+.form-select:focus {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: none;
+  box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+}
+
+.form-floating > label {
+  color: var(--text-secondary) !important;
+  padding: 20px;
+}
+
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label,
+.form-floating > .form-select ~ label {
+  transform: scale(0.85) translateY(-0.8rem) translateX(0.15rem);
+  color: var(--primary) !important;
+}
+
+.form-floating > .form-control:not(:placeholder-shown) ~ label::after {
+  background-color: transparent;
+}
+
+.form-floating > .form-control:focus ~ label::after,
+.form-floating > .form-select ~ label::after {
+  background-color: transparent;
+}
+
+.form-select option {
+  background-color: var(--card-bg);
+  color: var(--text-primary);
+}
+
+.form-select:invalid {
+  color: var(--text-secondary);
+}
+
+.form-select:focus,
+.form-select:valid {
+  color: var(--text-primary);
+}
+
+/* Override default select option styles */
+.form-select option {
+  background-color: var(--card-bg) !important;
+  color: var(--text-primary) !important;
+}
+
+.form-select option:hover {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+}
+
+.form-select option:checked {
+  background-color: var(--primary) !important;
+  color: var(--bg-primary) !important;
+}
+
+/* Remove default focus outline */
+.form-select:focus {
+  outline: none !important;
+  box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25) !important;
+}
+
+.btn-submit {
+  background-color: var(--primary);
+  color: var(--bg-primary);
+  padding: 15px 30px;
+  border-radius: 30px;
+  font-weight: 600;
+  border: none;
+  transition: all 0.3s ease;
+  width: 100%;
+  margin-top: 1rem;
+  font-size: 1.1rem;
+}
+
+.btn-submit:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(220, 53, 69, 0.3);
+}
+
+.text-danger {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: #ff6b6b;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .form-title {
+    font-size: 2rem;
+  }
+
+  .form-card {
+    padding: 30px;
+  }
+
+  .theme-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: var(--primary);
+    color: var(--bg-primary);
+    box-shadow: 0 2px 10px rgba(220, 53, 69, 0.2);
+    z-index: 1000;
+  }
+}
+
+@media (max-width: 576px) {
+  .form-title {
+    font-size: 1.8rem;
+  }
+
+  .form-section {
+    padding: 80px 0;
+  }
+}
+
+/* Add custom dropdown styles */
+.dropdown {
+  position: relative;
+  width: 100%;
+}
+
+.dropdown-menu {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  padding: 0.5rem 0;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition: all 0.2s ease;
+  z-index: 1000;
+  max-height: 300px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary) var(--bg-secondary);
+}
+
+.dropdown-menu.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdown-item {
+  color: var(--text-primary);
+  padding: 0.875rem 1.25rem;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background-color: var(--primary);
+  color: var(--bg-primary);
+}
+
+.dropdown-item.active {
+  background-color: var(--primary);
+  color: var(--bg-primary);
+}
+
+.form-select {
+  text-align: left;
+  cursor: pointer;
+  position: relative;
+  padding-right: 4rem;
+  transition: all 0.2s ease;
+  width: 100%;
+  background-color: var(--bg-secondary);
+  border: 2px solid transparent;
+  height: 60px;
+  padding-top: 1.625rem;
+  padding-bottom: 0.625rem;
+  border-radius: 12px;
+  background-image: none;
+}
+
+.form-select:hover {
+  background-color: var(--bg-tertiary);
+  border-color: var(--border-color);
+}
+
+.form-select:focus {
+  outline: none;
+  border-color: var(--primary);
+  background-color: var(--bg-tertiary);
+}
+
+.form-select::after {
+  content: '\f107';
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  position: absolute;
+  right: 2.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: transform 0.2s ease;
+  pointer-events: none;
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+
+.form-select[aria-expanded="true"]::after {
+  transform: translateY(-50%) rotate(180deg);
+  color: var(--primary);
+}
+
+.selected-option {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: color 0.2s ease;
+  padding-right: 1rem;
+  font-weight: 500;
+}
+
+/* Improve floating label for dropdowns */
+.form-floating {
+  position: relative;
+}
+
+.form-floating label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  padding: 1rem 1rem;
+  pointer-events: none;
+  border: 1px solid transparent;
+  transform-origin: 0 0;
+  transition: all 0.2s ease;
+  z-index: 1;
+  font-weight: 500;
+}
+
+.form-floating .form-select:focus ~ label,
+.form-floating .form-select:not(:placeholder-shown) ~ label {
+  transform: scale(.85) translateY(-0.5rem) translateX(0.15rem);
+  color: var(--primary);
+  font-weight: 600;
+}
+
+/* Style for placeholder text */
+.form-select:not(:has(.selected-option:not(:empty))) {
+  color: var(--text-secondary);
+}
+
+.form-select:has(.selected-option:not(:empty)) {
+  color: var(--text-primary);
+}
+
+/* Add focus ring animation */
+@keyframes focusRing {
+  0% {
+    box-shadow: 0 0 0 0 rgba(230, 0, 38, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 4px rgba(230, 0, 38, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(230, 0, 38, 0);
+  }
+}
+
+.form-select:focus {
+  animation: focusRing 0.3s ease-out;
+}
+
+/* Remove success state styles */
+.form-select.is-valid {
+  border-color: transparent;
+}
+
+.form-select.is-valid:focus {
+  box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+}
+
+/* Add error state styles */
+.form-select.is-invalid {
+  border-color: #dc3545;
+}
+
+.form-select.is-invalid:focus {
+  box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+}
+
+/* Add checkmark for valid state */
+.form-select.is-valid::before {
+  content: '\f00c';
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  position: absolute;
+  right: 1.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--success);
+  font-size: 1rem;
+} 
